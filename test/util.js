@@ -49,9 +49,10 @@ function getApp() {
     getAuth()
       .then((auth) => {
         let store = auth.store;
+        let memoryStore = new MemoryStore();
         let sessionOptions = {
           secret: 'secret',
-          store: new MemoryStore(),
+          store: memoryStore,
           resave: false,
           saveUninitialized: false
         }
@@ -61,6 +62,7 @@ function getApp() {
         app.use(store.modelMiddleware());
         app.use(auth.middleware(store));
         app.auth = auth;
+        app.memoryStore = memoryStore;
         resolve(app);
       });
   });
@@ -74,6 +76,27 @@ function getRequest() {
         request.app = app;
         resolve(request);
       });
+  });
+}
+
+function getCookie(res) {
+  let setCookies = res.headers['set-cookie'];
+  if (!setCookies) return;
+  let setCookie = setCookies[0];
+  return setCookie.slice(0, setCookie.indexOf(';'));
+}
+
+function getSessionId(res) {
+  let cookie = getCookie(res);
+  return cookie.split('=')[1].split('.')[0].slice(4);
+}
+
+function getUserIdFromSession(res, memoryStore, done) {
+  let sessionId = getSessionId(res);
+  memoryStore.get(sessionId, (err, session) => {
+    if (err) return done(err);
+
+    done(null, session.userId);
   });
 }
 
@@ -98,6 +121,9 @@ export default {
   getAuth,
   getApp,
   getRequest,
+  getCookie,
+  getSessionId,
+  getUserIdFromSession,
   generateEmail,
   generatePassword,
   makeHash,
