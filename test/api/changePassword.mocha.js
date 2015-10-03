@@ -9,70 +9,61 @@ let userId;
 let oldpassword;
 let password;
 
-before((done) => {
-  util.getAuth()
+before(() => {
+  return util.getAuth()
     .then((a) => {
       auth = a
       changePassword = changePasswordInit.bind(auth);
-      done();
     });
 });
 
 describe('changePassword', () => {
-  beforeEach((done) => {
+  beforeEach(() => {
     model = auth.store.createModel();
     userId = model.id();
     oldpassword = util.generatePassword();
     password = util.generatePassword();
-    done();
   });
 
-  it('should changePassword', (done) => {
+  it('should changePassword', () => {
     let user = {
       _id: userId,
       local: {
         hash: util.makeHash(oldpassword)
       }
     }
-    model.add('auths', user, (err) => {
-      assert(!err);
-
-      changePassword(userId, oldpassword, password)
-        .then((data) => {
-          assert(!data);
-          model.fetch('auths', userId, (err) => {
-            assert(!err);
-            let hash = model.get('auths', userId, 'local.hash');
-            assert(hash);
-            assert(util.compare(password, hash));
-            done();
+    return model
+      .add('auths', user)
+      .then(() => {
+        return changePassword(userId, oldpassword, password)
+          .then((data) => {
+            assert(!data);
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                let hash = model.get('auths', userId, 'local.hash');
+                assert(hash);
+                assert(util.compare(password, hash));
+              });
           });
-        })
-        .catch((err) => {
-          done('catch is called ' + err);
-        });
-    });
+      });
   });
 
-  it('should not changePassword if no local provider', (done) => {
+  it('should not changePassword if no local provider', () => {
     let user = {
       _id: userId
     }
-    model.add('auths', user, (err) => {
-      assert(!err);
-
-      changePassword(userId, oldpassword, password)
-        .then((data) => {
-          assert(data && data.info);
-          done();
-        })
-        .catch((err) => {
-          done('catch is called ' + err);
-        });
-    });
+    return model
+      .add('auths', user)
+      .then(() => {
+        changePassword(userId, oldpassword, password)
+          .then((data) => {
+            assert(data && data.info);
+          });
+      });
   });
 
-  it('should not changePassword if wrong oldpassword', (done) => {
+  it('should not changePassword if wrong oldpassword', () => {
     let user = {
       _id: userId,
       local: {
@@ -81,28 +72,20 @@ describe('changePassword', () => {
     }
     oldpassword = util.generatePassword();
 
-    model.add('auths', user, (err) => {
-      assert(!err);
-
-      changePassword(userId, oldpassword, password)
-        .then((data) => {
-          assert(data && data.info);
-          done();
-        })
-        .catch((err) => {
-          done('catch is called ' + err);
-        });
-    });
+    return model
+      .add('auths', user)
+      .then(() => {
+        changePassword(userId, oldpassword, password)
+          .then((data) => {
+            assert(data && data.info);
+          });
+      });
   });
 
-  it('should not changePassword if no user', (done) => {
-    changePassword(userId, password)
+  it('should not changePassword if no user', () => {
+    return changePassword(userId, password)
       .then((data) => {
         assert(data && data.info);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 });

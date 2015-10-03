@@ -10,28 +10,28 @@ let password;
 let newpassword;
 let userId;
 
-before((done) => {
-  util.getAuth()
+before(() => {
+  return util.getAuth()
     .then((a) => {
       auth = a;
       routeChangePassword = routeChangePasswordInit.bind(auth);
-      done();
     });
 });
 
 describe('routeChangePassword', () => {
-  beforeEach((done) => {
+  beforeEach(() => {
     let model = auth.store.createModel();
     email = util.generateEmail();
     password = util.generatePassword();
     newpassword = util.generatePassword();
+    userId = model.id();
     let user = {
+      _id: userId,
       email: email,
       local: {
         hash: util.makeHash(password)
       }
     }
-    userId = model.add('auths', user, done);
     req = {
       body: {
         oldpassword: password,
@@ -42,16 +42,13 @@ describe('routeChangePassword', () => {
         userId
       }
     }
+    return model.add('auths', user);
   });
 
-  it('should change password', (done) => {
+  it('should change password', () => {
     routeChangePassword(req)
       .then((data) => {
         assert(!data);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 });

@@ -8,24 +8,22 @@ let model;
 let userId;
 let password;
 
-before((done) => {
-  util.getAuth()
+before(() => {
+  return util.getAuth()
     .then((a) => {
       auth = a
       passwordMatch = passwordMatchInit.bind(auth);
-      done();
     });
 });
 
 describe('passwordMatch', () => {
-  beforeEach((done) => {
+  beforeEach(() => {
     model = auth.store.createModel();
     userId = model.id();
     password = util.generatePassword();
-    done();
   });
 
-  it('should passwordMatch', (done) => {
+  it('should passwordMatch', () => {
     let user = {
       _id: userId,
       local: {
@@ -33,17 +31,13 @@ describe('passwordMatch', () => {
       }
     }
 
-    passwordMatch(user, password)
+    return passwordMatch(user, password)
       .then((match) => {
         assert(match);
-        done()
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 
-  it('should not passwordMatch', (done) => {
+  it('should not passwordMatch', () => {
     let user = {
       _id: userId,
       local: {
@@ -52,13 +46,9 @@ describe('passwordMatch', () => {
     }
     password = util.generatePassword();
 
-    passwordMatch(user, password)
+    return passwordMatch(user, password)
       .then((match) => {
         assert(!match);
-        done()
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 });

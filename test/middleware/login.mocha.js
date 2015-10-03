@@ -10,8 +10,8 @@ let password;
 let userId;
 
 describe('Middleware login', () => {
-  beforeEach((done) => {
-    util
+  beforeEach(() => {
+    return util
       .getRequest()
       .then((r) => {
         request = r;
@@ -20,145 +20,141 @@ describe('Middleware login', () => {
         email = util.generateEmail();
         password = util.generatePassword();
         let model = auth.store.createModel();
+        userId = model.id();
 
         let user = {
+          _id: userId,
           email: email,
           local: {
             hash: util.makeHash(password)
           }
         }
-        userId = model.add('auths', user, done);
+        return model.add('auths', user);
       });
   });
 
-  it('should login', (done) => {
-    request
+  it('should login', () => {
+    return request
       .get(path)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(!info);
         assert(success);
         assert(url);
 
-        util.getUserIdFromSession(res, memoryStore, (err, id) => {
-          assert(!err);
-          assert.equal(id, userId);
-          done();
-        });
+        return util
+          .getUserIdFromSession(res, memoryStore)
+          .then((id) => {
+            assert.equal(id, userId);
+          });
       });
   });
 
-  it('should not login when no credentials', (done) => {
-    request
+  it('should not login when no credentials', () => {
+    return request
       .get(path)
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
-        util.getUserIdFromSession(res, memoryStore, (err, id) => {
-          assert(!err);
-          assert.notEqual(id, userId);
-          done();
-        });
+        return util
+          .getUserIdFromSession(res, memoryStore)
+          .then((id) => {
+            assert.notEqual(id, userId);
+          });
       });
   });
 
-  it('should not login when no email', (done) => {
+  it('should not login when no email', () => {
     request
       .get(path)
       .send({password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
-        util.getUserIdFromSession(res, memoryStore, (err, id) => {
-          assert(!err);
-          assert.notEqual(id, userId);
-          done();
-        });
+        return util
+          .getUserIdFromSession(res, memoryStore)
+          .then((id) => {
+            assert.notEqual(id, userId);
+          });
       });
   });
 
-  it('should not login when no password', (done) => {
+  it('should not login when no password', () => {
     request
       .get(path)
       .send({email})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
-        util.getUserIdFromSession(res, memoryStore, (err, id) => {
-          assert(!err);
-          assert.notEqual(id, userId);
-          done();
-        });
+        return util
+          .getUserIdFromSession(res, memoryStore)
+          .then((id) => {
+            assert.notEqual(id, userId);
+          });
       });
   });
 
-  it('should not login when email is wrong', (done) => {
+  it('should not login when email is wrong', () => {
     request
       .get(path)
       .send({email: 'wrong@email.com', password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
-        util.getUserIdFromSession(res, memoryStore, (err, id) => {
-          assert(!err);
-          assert.notEqual(id, userId);
-          done();
-        });
+        return util
+          .getUserIdFromSession(res, memoryStore)
+          .then((id) => {
+            assert.notEqual(id, userId);
+          });
       });
   });
 
-  it('should not login when password is wrong', (done) => {
+  it('should not login when password is wrong', () => {
     request
       .get(path)
       .send({email, password: 'wrongpassword'})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
-        util.getUserIdFromSession(res, memoryStore, (err, id) => {
-          assert(!err);
-          assert.notEqual(id, userId);
-          done();
-        });
+        return util
+          .getUserIdFromSession(res, memoryStore)
+          .then((id) => {
+            assert.notEqual(id, userId);
+          });
       });
   });
 });

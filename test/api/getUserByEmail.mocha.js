@@ -7,57 +7,46 @@ let getUserByEmail;
 let email;
 let userId;
 
-before((done) => {
-  util.getAuth()
+before(() => {
+  return util.getAuth()
     .then((a) => {
       auth = a;
       getUserByEmail = getUserByEmailInit.bind(auth);
-      done();
     });
 });
 
 describe('getUserByEmail', () => {
-  beforeEach((done) => {
+  beforeEach(() => {
     let model = auth.store.createModel();
     email = util.generateEmail();
+    userId = model.id();
     let user = {
+      _id: userId,
       email: email
     }
-    userId = model.add('auths', user, done);
+    return model.add('auths', user);
   });
 
-  it('should get user', (done) => {
-    getUserByEmail(email)
+  it('should get user', () => {
+    return getUserByEmail(email)
       .then((user) => {
         assert(user);
         assert.equal(user._id, userId);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 
-  it('should get user when uppercase email', (done) => {
-    getUserByEmail(email.toUpperCase())
+  it('should get user when uppercase email', () => {
+    return getUserByEmail(email.toUpperCase())
       .then((user) => {
         assert(user);
         assert.equal(user._id, userId);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 
-  it('should not get user when wrong email', (done) => {
-    getUserByEmail('wrong@email.com')
+  it('should not get user when wrong email', () => {
+    return getUserByEmail('wrong@email.com')
       .then((user) => {
         assert(!user);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 });

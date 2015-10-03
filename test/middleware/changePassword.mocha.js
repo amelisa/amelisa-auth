@@ -12,8 +12,8 @@ let newpassword;
 let userId;
 
 describe('Middleware change password', () => {
-  beforeEach((done) => {
-    util
+  beforeEach(() => {
+    return util
       .getRequest()
       .then((r) => {
         request = r;
@@ -22,272 +22,267 @@ describe('Middleware change password', () => {
         password = util.generatePassword();
         newpassword = util.generatePassword();
         let model = auth.store.createModel();
+        userId = model.id();
 
         let user = {
+          _id: userId,
           email: email,
           local: {
             hash: util.makeHash(password)
           }
         }
-        userId = model.add('auths', user, done);
+        return model.add('auths', user);
       });
   });
 
-  it('should change password', (done) => {
-    request
+  it('should change password', () => {
+    return request
       .get(loginPath)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(!info);
         assert(success);
         assert(url);
 
-        request
+        return request
           .get(path)
           .send({oldpassword: password, password: newpassword, confirm: newpassword})
           .set('Cookie', util.getCookie(res))
           .set('X-Requested-With', 'XMLHttpRequest')
           .expect('Content-Type', /json/)
           .expect(200)
-          .end((err, res) => {
-            assert.equal(err, undefined);
+          .then((res) => {
             let {success, info} = res.body;
             assert(!info);
             assert(success);
 
             let model = auth.store.createModel();
-            model.fetch('auths', userId, () => {
-              let user = model.get('auths', userId);
-              assert(util.compare(newpassword, user.local.hash));
-              done();
-            });
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                let user = model.get('auths', userId);
+                assert(util.compare(newpassword, user.local.hash));
+              });
           });
-        });
+      });
   });
 
-  it('should not change password when no passwords', (done) => {
-    request
+  it('should not change password when no passwords', () => {
+    return request
       .get(loginPath)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(!info);
         assert(success);
         assert(url);
 
-        request
+        return request
           .get(path)
           .set('Cookie', util.getCookie(res))
           .set('X-Requested-With', 'XMLHttpRequest')
           .expect('Content-Type', /json/)
           .expect(200)
-          .end((err, res) => {
-            assert.equal(err, undefined);
+          .then((res) => {
             let {success, info} = res.body;
             assert(info);
             assert(!success);
 
             let model = auth.store.createModel();
-            model.fetch('auths', userId, () => {
-              let user = model.get('auths', userId);
-              assert(util.compare(password, user.local.hash));
-              done();
-            });
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                let user = model.get('auths', userId);
+                assert(util.compare(password, user.local.hash));
+              });
           });
-        });
+      });
   });
 
-  it('should not change password when no oldpassword', (done) => {
-    request
+  it('should not change password when no oldpassword', () => {
+    return request
       .get(loginPath)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(!info);
         assert(success);
         assert(url);
 
-        request
+        return request
           .get(path)
           .send({password: newpassword, confirm: newpassword})
           .set('Cookie', util.getCookie(res))
           .set('X-Requested-With', 'XMLHttpRequest')
           .expect('Content-Type', /json/)
           .expect(200)
-          .end((err, res) => {
-            assert.equal(err, undefined);
+          .then((res) => {
             let {success, info} = res.body;
             assert(info);
             assert(!success);
 
             let model = auth.store.createModel();
-            model.fetch('auths', userId, () => {
-              let user = model.get('auths', userId);
-              assert(util.compare(password, user.local.hash));
-              done();
-            });
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                let user = model.get('auths', userId);
+                assert(util.compare(password, user.local.hash));
+              });
           });
-        });
+      });
   });
 
-  it('should not change password when no password', (done) => {
-    request
+  it('should not change password when no password', () => {
+    return request
       .get(loginPath)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(!info);
         assert(success);
         assert(url);
 
-        request
+        return request
           .get(path)
           .send({oldpassword: password, confirm: newpassword})
           .set('Cookie', util.getCookie(res))
           .set('X-Requested-With', 'XMLHttpRequest')
           .expect('Content-Type', /json/)
           .expect(200)
-          .end((err, res) => {
-            assert.equal(err, undefined);
+          .then((res) => {
             let {success, info} = res.body;
             assert(info);
             assert(!success);
 
             let model = auth.store.createModel();
-            model.fetch('auths', userId, () => {
-              let user = model.get('auths', userId);
-              assert(util.compare(password, user.local.hash));
-              done();
-            });
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                let user = model.get('auths', userId);
+                assert(util.compare(password, user.local.hash));
+              });
           });
-        });
+      });
   });
 
-  it('should not change password when no confirm', (done) => {
-    request
+  it('should not change password when no confirm', () => {
+    return request
       .get(loginPath)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(!info);
         assert(success);
         assert(url);
 
-        request
+        return request
           .get(path)
           .send({oldpassword: password, password: newpassword})
           .set('Cookie', util.getCookie(res))
           .set('X-Requested-With', 'XMLHttpRequest')
           .expect('Content-Type', /json/)
           .expect(200)
-          .end((err, res) => {
-            assert.equal(err, undefined);
+          .then((res) => {
             let {success, info} = res.body;
             assert(info);
             assert(!success);
 
             let model = auth.store.createModel();
-            model.fetch('auths', userId, () => {
-              let user = model.get('auths', userId);
-              assert(util.compare(password, user.local.hash));
-              done();
-            });
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                let user = model.get('auths', userId);
+                assert(util.compare(password, user.local.hash));
+              });
           });
-        });
+      });
   });
 
-  it('should not change password when wrong oldpassword', (done) => {
-    request
+  it('should not change password when wrong oldpassword', () => {
+    return request
       .get(loginPath)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(!info);
         assert(success);
         assert(url);
 
-        request
+        return request
           .get(path)
           .send({oldpassword: 'wrongpassword', password: newpassword, confirm: newpassword})
           .set('Cookie', util.getCookie(res))
           .set('X-Requested-With', 'XMLHttpRequest')
           .expect('Content-Type', /json/)
           .expect(200)
-          .end((err, res) => {
-            assert.equal(err, undefined);
+          .then((res) => {
             let {success, info} = res.body;
             assert(info);
             assert(!success);
 
             let model = auth.store.createModel();
-            model.fetch('auths', userId, () => {
-              let user = model.get('auths', userId);
-              assert(util.compare(password, user.local.hash));
-              done();
-            });
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                let user = model.get('auths', userId);
+                assert(util.compare(password, user.local.hash));
+              });
           });
-        });
+      });
   });
 
-  it('should not change password when wrong confirm', (done) => {
-    request
+  it('should not change password when wrong confirm', () => {
+    return request
       .get(loginPath)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(!info);
         assert(success);
         assert(url);
 
-        request
+        return request
           .get(path)
           .send({oldpassword: password, password: newpassword, confirm: 'wrongpassword'})
           .set('Cookie', util.getCookie(res))
           .set('X-Requested-With', 'XMLHttpRequest')
           .expect('Content-Type', /json/)
           .expect(200)
-          .end((err, res) => {
-            assert.equal(err, undefined);
+          .then((res) => {
             let {success, info} = res.body;
             assert(info);
             assert(!success);
 
             let model = auth.store.createModel();
-            model.fetch('auths', userId, () => {
-              let user = model.get('auths', userId);
-              assert(util.compare(password, user.local.hash));
-              done();
-            });
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                let user = model.get('auths', userId);
+                assert(util.compare(password, user.local.hash));
+              });
           });
-        });
+      });
   });
 });

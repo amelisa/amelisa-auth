@@ -1,5 +1,5 @@
 import { MemoryStorage, Store } from 'engine';
-import supertest from 'supertest';
+import supertest from 'supertest-as-promised';
 import bcrypt from 'bcrypt';
 import express from 'express';
 import bodyParser from 'body-parser';
@@ -91,12 +91,15 @@ function getSessionId(res) {
   return cookie.split('=')[1].split('.')[0].slice(4);
 }
 
-function getUserIdFromSession(res, memoryStore, done) {
+function getUserIdFromSession(res, memoryStore) {
   let sessionId = getSessionId(res);
-  memoryStore.get(sessionId, (err, session) => {
-    if (err) return done(err);
 
-    done(null, session.userId);
+  return new Promise((resolve, reject) => {
+    memoryStore.get(sessionId, (err, session) => {
+      if (err) return reject(err);
+
+      resolve(session.userId);
+    });
   });
 }
 

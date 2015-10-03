@@ -8,73 +8,60 @@ let model;
 let userId;
 let email;
 
-before((done) => {
-  util.getAuth()
+before(() => {
+  return util.getAuth()
     .then((a) => {
       auth = a
       changeEmail = changeEmailInit.bind(auth);
-      done();
     });
 });
 
 describe('changeEmail', () => {
-  beforeEach((done) => {
+  beforeEach(() => {
     model = auth.store.createModel();
     userId = model.id();
     email = util.generateEmail();
-    done();
   });
 
-  it('should changeEmail', (done) => {
+  it('should changeEmail', () => {
     let user = {
       _id: userId,
       email: util.generateEmail()
     }
-    model.add('auths', user, (err) => {
-      assert(!err);
-
-      changeEmail(userId, email)
-        .then((data) => {
-          assert(!data);
-          model.fetch('auths', userId, (err) => {
-            assert(!err);
-            assert.equal(model.get('auths', userId, 'email'), email);
-            done();
-          });
-        })
-        .catch((err) => {
-          done('catch is called ' + err);
-        });
-    });
+    return model
+      .add('auths', user)
+      .then(() => {
+        return changeEmail(userId, email)
+          .then((data) => {
+            assert(!data);
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                assert.equal(model.get('auths', userId, 'email'), email);
+              });
+            });
+      });
   });
 
-  it('should not changeEmail if same email', (done) => {
+  it('should not changeEmail if same email', () => {
     let user = {
       _id: userId,
       email: email
     }
-    model.add('auths', user, (err) => {
-      assert(!err);
-
-      changeEmail(userId, email)
-        .then((data) => {
-          assert(data && data.info);
-          done();
-        })
-        .catch((err) => {
-          done('catch is called ' + err);
-        });
-    });
+    return model
+      .add('auths', user)
+      .then(() => {
+        return changeEmail(userId, email)
+          .then((data) => {
+            assert(data && data.info);
+          });
+      });
   });
 
-  it('should not changeEmail if no user', (done) => {
-    changeEmail(userId, email)
+  it('should not changeEmail if no user', () => {
+    return changeEmail(userId, email)
       .then((data) => {
         assert(data && data.info);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 });

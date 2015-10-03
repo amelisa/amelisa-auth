@@ -9,27 +9,27 @@ let email;
 let password;
 let userId;
 
-before((done) => {
-  util.getAuth()
+before(() => {
+  return util.getAuth()
     .then((a) => {
       auth = a;
       routeLogout = routeLogoutInit.bind(auth);
-      done();
     });
 });
 
 describe('routeLogout', () => {
-  beforeEach((done) => {
+  beforeEach(() => {
     let model = auth.store.createModel();
     email = util.generateEmail();
     password = util.generatePassword();
+    userId = model.id();
     let user = {
+      _id: userId,
       email: email,
       local: {
         hash: util.makeHash(password)
       }
     }
-    userId = model.add('auths', user, done);
     req = {
       body: {
         email,
@@ -40,17 +40,14 @@ describe('routeLogout', () => {
       },
       logout: () => {}
     }
+    return model.add('auths', user);
   });
 
-  it('should logout', (done) => {
-    routeLogout(req)
+  it('should logout', () => {
+    return routeLogout(req)
       .then((data) => {
         assert(!data);
         assert(!req.session.userId);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 });

@@ -9,17 +9,16 @@ let email;
 let password;
 let userId;
 
-before((done) => {
-  util.getAuth()
+before(() => {
+  return util.getAuth()
     .then((a) => {
       auth = a;
       routeRegister = routeRegisterInit.bind(auth);
-      done();
     });
 });
 
 describe('routeRegister', () => {
-  beforeEach((done) => {
+  beforeEach(() => {
     let model = auth.store.createModel();
     email = util.generateEmail();
     password = util.generatePassword();
@@ -35,18 +34,13 @@ describe('routeRegister', () => {
       },
       login: (userId, next) => next()
     }
-    done();
   });
 
-  it('should register and login', (done) => {
-    routeRegister(req)
+  it('should register and login', () => {
+    return routeRegister(req)
       .then((data) => {
         assert(!data);
         assert.equal(req.session.userId, userId);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 });

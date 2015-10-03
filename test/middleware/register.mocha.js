@@ -10,8 +10,8 @@ let password;
 let userId;
 
 describe('Middleware register', () => {
-  beforeEach((done) => {
-    util
+  beforeEach(() => {
+    return util
       .getRequest()
       .then((r) => {
         request = r;
@@ -19,199 +19,207 @@ describe('Middleware register', () => {
         memoryStore = request.app.memoryStore;
         email = util.generateEmail();
         password = util.generatePassword();
-        done();
       });
   });
 
-  it('should register', (done) => {
-    request
+  it('should register', () => {
+    return request
       .get(path)
       .send({email, password, confirm: password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(!info);
         assert(success);
         assert(url);
 
         let model = auth.store.createModel();
-        model.fetch('auths', {}, () => {
-          let users = model.query('auths', {}).get();
-          assert.equal(users.length, 1);
-          let user = users[0];
-          assert.equal(user.email, email);
-          assert(util.compare(password, user.local.hash));
+        let userQuery = model.query('auths', {});
+        return userQuery
+          .fetch()
+          .then(() => {
+            let users = userQuery.get();
+            assert.equal(users.length, 1);
+            let user = users[0];
+            assert.equal(user.email, email);
+            assert(util.compare(password, user.local.hash));
 
-          util.getUserIdFromSession(res, memoryStore, (err, id) => {
-            assert(!err);
-            assert.equal(id, user._id);
-            done();
+            return util
+              .getUserIdFromSession(res, memoryStore)
+              .then((id) => {
+                assert.equal(id, user._id);
+              });
           });
-        });
       });
   });
 
-  it('should not register when no credentials', (done) => {
-    request
+  it('should not register when no credentials', () => {
+    return request
       .get(path)
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
         let model = auth.store.createModel();
-        model.fetch('auths', {}, () => {
-          let users = model.query('auths', {}).get();
-          assert.equal(users.length, 0);
-          done();
-        });
+        let userQuery = model.query('auths', {});
+        return userQuery
+          .fetch()
+          .then(() => {
+            let users = userQuery.get();
+            assert.equal(users.length, 0);
+          });
       });
   });
 
-  it('should not register when no email', (done) => {
-    request
+  it('should not register when no email', () => {
+    return request
       .get(path)
       .send({password, confirm: password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
         let model = auth.store.createModel();
-        model.fetch('auths', {}, () => {
-          let users = model.query('auths', {}).get();
-          assert.equal(users.length, 0);
-          done();
-        });
+        let userQuery = model.query('auths', {});
+        return userQuery
+          .fetch()
+          .then(() => {
+            let users = userQuery.get();
+            assert.equal(users.length, 0);
+          });
       });
   });
 
-  it('should not register when no password', (done) => {
-    request
+  it('should not register when no password', () => {
+    return request
       .get(path)
       .send({email, confirm: password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
         let model = auth.store.createModel();
-        model.fetch('auths', {}, () => {
-          let users = model.query('auths', {}).get();
-          assert.equal(users.length, 0);
-          done();
-        });
+        let userQuery = model.query('auths', {});
+        return userQuery
+          .fetch()
+          .then(() => {
+            let users = userQuery.get();
+            assert.equal(users.length, 0);
+          });
       });
   });
 
-  it('should not register when no confirm', (done) => {
-    request
+  it('should not register when no confirm', () => {
+    return request
       .get(path)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
         let model = auth.store.createModel();
-        model.fetch('auths', {}, () => {
-          let users = model.query('auths', {}).get();
-          assert.equal(users.length, 0);
-          done();
-        });
+        let userQuery = model.query('auths', {});
+        return userQuery
+          .fetch()
+          .then(() => {
+            let users = userQuery.get();
+            assert.equal(users.length, 0);
+          });
       });
   });
 
-  it('should not register when email format wrong', (done) => {
-    request
+  it('should not register when email format wrong', () => {
+    return request
       .get(path)
       .send({email: 'wrongformat', password, confirm: password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
         let model = auth.store.createModel();
-        model.fetch('auths', {}, () => {
-          let users = model.query('auths', {}).get();
-          assert.equal(users.length, 0);
-          done();
-        });
+        let userQuery = model.query('auths', {});
+        return userQuery
+          .fetch()
+          .then(() => {
+            let users = userQuery.get();
+            assert.equal(users.length, 0);
+          });
       });
   });
 
-  it('should not register when password length < 6', (done) => {
+  it('should not register when password length < 6', () => {
     password = 'asdf';
-    request
+    return request
       .get(path)
       .send({email, password, confirm: password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
         let model = auth.store.createModel();
-        model.fetch('auths', {}, () => {
-          let users = model.query('auths', {}).get();
-          assert.equal(users.length, 0);
-          done();
-        });
+        let userQuery = model.query('auths', {});
+        return userQuery
+          .fetch()
+          .then(() => {
+            let users = userQuery.get();
+            assert.equal(users.length, 0);
+          });
       });
   });
 
-  it('should not register when password isnt confirm', (done) => {
-    request
+  it('should not register when password isnt confirm', () => {
+    return request
       .get(path)
       .send({email, password, confirm: password + 'diff'})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(info);
         assert(!success);
         assert(!url);
 
         let model = auth.store.createModel();
-        model.fetch('auths', {}, () => {
-          let users = model.query('auths', {}).get();
-          assert.equal(users.length, 0);
-          done();
-        });
+        let userQuery = model.query('auths', {});
+        return userQuery
+          .fetch()
+          .then(() => {
+            let users = userQuery.get();
+            assert.equal(users.length, 0);
+          });
       });
   });
 });

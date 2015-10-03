@@ -8,56 +8,47 @@ let model;
 let userId;
 let password;
 
-before((done) => {
-  util.getAuth()
+before(() => {
+  return util.getAuth()
     .then((a) => {
       auth = a
       setPassword = setPasswordInit.bind(auth);
-      done();
     });
 });
 
 describe('setPassword', () => {
-  beforeEach((done) => {
+  beforeEach(() => {
     model = auth.store.createModel();
     userId = model.id();
     password = util.generatePassword();
-    done();
   });
 
-  it('should setPassword', (done) => {
+  it('should setPassword', () => {
     let user = {
       _id: userId
     }
-    model.add('auths', user, (err) => {
-      assert(!err);
-
-      setPassword(userId, password)
-        .then((data) => {
-          assert(!data);
-          model.fetch('auths', userId, (err) => {
-            assert(!err);
-            let hash = model.get('auths', userId, 'local.hash');
-            assert(hash);
-            let salt = model.get('auths', userId, 'local.salt');
-            assert(!salt);
-            done();
+    return model
+      .add('auths', user)
+      .then(() => {
+        setPassword(userId, password)
+          .then((data) => {
+            assert(!data);
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                let hash = model.get('auths', userId, 'local.hash');
+                assert(hash);
+                let salt = model.get('auths', userId, 'local.salt');
+                assert(!salt);
+              });
           });
-        })
-        .catch((err) => {
-          done('catch is called ' + err);
-        });
-    });
+      });
   });
 
-  it('should not setPassword if no user', (done) => {
-    setPassword(userId, password)
+  it('should not setPassword if no user', () => {
+    return setPassword(userId, password)
       .then((data) => {
         assert(data && data.info);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 });

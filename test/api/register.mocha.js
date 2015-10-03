@@ -10,17 +10,16 @@ let email;
 let password;
 let userData;
 
-before((done) => {
-  util.getAuth()
+before(() => {
+  return util.getAuth()
     .then((a) => {
       auth = a
       register = registerInit.bind(auth);
-      done();
     });
 });
 
 describe('register', () => {
-  beforeEach((done) => {
+  beforeEach(() => {
     model = auth.store.createModel();
     userId = model.id();
     email = util.generateEmail();
@@ -28,91 +27,79 @@ describe('register', () => {
     userData = {
       a: 'b'
     }
-    done();
   });
 
-  it('should register and create user', (done) => {
-    register(userId, email, password, userData)
+  it('should register and create user', () => {
+    return register(userId, email, password, userData)
       .then((data) => {
         assert(!data);
-        model.fetch('auths', userId, (err) => {
-          assert(!err);
-          let user = model.get('auths', userId);
-          assert(user);
-          assert.equal(user._id, userId);
-          assert.equal(user.email, email);
-          assert.equal(user.a, userData.a);
-          assert(user.local);
-          assert(user.local.hash);
-          assert(util.compare(password, user.local.hash));
-          done();
-        });
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
-      });
-  });
-
-  it('should just save profile if user with userId exists but without provider', (done) => {
-    let dbUser = {
-      _id: userId,
-    }
-    model.add('auths', dbUser, (err) => {
-      assert(!err);
-      register(userId, email, password, userData)
-        .then((data) => {
-          assert(!data);
-          model.fetch('auths', userId, (err) => {
-            assert(!err);
+        return model
+          .fetch('auths', userId)
+          .then(() => {
             let user = model.get('auths', userId);
             assert(user);
             assert.equal(user._id, userId);
-            assert(!user.email);
-            assert(!user.a);
+            assert.equal(user.email, email);
+            assert.equal(user.a, userData.a);
             assert(user.local);
             assert(user.local.hash);
             assert(util.compare(password, user.local.hash));
-            done();
           });
-        })
-        .catch((err) => {
-          done('catch is called ' + err);
-        });
-    });
+      });
   });
 
-  it('should not register when user with same email exists', (done) => {
+  it('should just save profile if user with userId exists but without provider', () => {
+    let dbUser = {
+      _id: userId,
+    }
+    return model
+      .add('auths', dbUser)
+      .then(() => {
+        return register(userId, email, password, userData)
+          .then((data) => {
+            assert(!data);
+            return model
+              .fetch('auths', userId)
+              .then(() => {
+                let user = model.get('auths', userId);
+                assert(user);
+                assert.equal(user._id, userId);
+                assert(!user.email);
+                assert(!user.a);
+                assert(user.local);
+                assert(user.local.hash);
+                assert(util.compare(password, user.local.hash));
+              });
+          });
+      });
+  });
+
+  it('should not register when user with same email exists', () => {
     let dbUser = {
       email: email
     }
-    model.add('auths', dbUser, (err) => {
-      assert(!err);
-      register(userId, email, password, userData)
-        .then((data) => {
-          assert(data && data.info);
-          done();
-        })
-        .catch((err) => {
-          done('catch is called ' + err);
-        });
-    });
+    return model
+      .add('auths', dbUser)
+      .then(() => {
+        return register(userId, email, password, userData)
+          .then((data) => {
+            assert(data && data.info);
+          });
+      });
   });
 
-  it('should not register when user with same userId and provider exists', (done) => {
+  it('should not register when user with same userId and provider exists', () => {
     let dbUser = {
       _id: userId,
       local: {}
     }
-    model.add('auths', dbUser, (err) => {
-      assert(!err);
-      register(userId, email, password, userData)
-        .then((data) => {
-          assert(data && data.info);
-          done();
-        })
-        .catch((err) => {
-          done('catch is called ' + err);
-        });
-    });
+    return model
+      .add('auths', dbUser)
+      .then(() => {
+        return register(userId, email, password, userData)
+          .then((data) => {
+            assert(data && data.info);
+          });
+      });
   });
 });

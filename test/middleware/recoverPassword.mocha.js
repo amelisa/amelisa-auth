@@ -10,8 +10,8 @@ let password;
 let userId;
 
 describe('Middleware recover password', () => {
-  beforeEach((done) => {
-    util
+  beforeEach(() => {
+    return util
       .getRequest()
       .then((r) => {
         request = r;
@@ -19,36 +19,38 @@ describe('Middleware recover password', () => {
         email = util.generateEmail();
         password = util.generatePassword();
         let model = auth.store.createModel();
+        userId = model.id();
 
         let user = {
+          _id: userId,
           email: email,
           local: {
             hash: util.makeHash(password)
           }
         }
-        userId = model.add('auths', user, done);
+        return model.add('auths', user);
       });
   });
 
-  it('should recover password and set secret', (done) => {
-    request
+  it('should recover password and set secret', () => {
+    return request
       .get(path)
       .send({email})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, info} = res.body;
         assert(!info);
         assert(success);
 
         let model = auth.store.createModel();
-        model.fetch('auths', userId, () => {
-          let user = model.get('auths', userId);
-          assert(user.local.secret);
-          done();
-        });
+        return model
+          .fetch('auths', userId)
+          .then(() => {
+            let user = model.get('auths', userId);
+            assert(user.local.secret);
+          });
       });
-    });
+  });
 });

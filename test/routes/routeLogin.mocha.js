@@ -9,27 +9,27 @@ let email;
 let password;
 let userId;
 
-before((done) => {
-  util.getAuth()
+before(() => {
+  return util.getAuth()
     .then((a) => {
       auth = a;
       routeLogin = routeLoginInit.bind(auth);
-      done();
     });
 });
 
 describe('routeLogin', () => {
-  beforeEach((done) => {
+  beforeEach(() => {
     let model = auth.store.createModel();
     email = util.generateEmail();
     password = util.generatePassword();
+    userId = model.id();
     let user = {
+      _id: userId,
       email: email,
       local: {
         hash: util.makeHash(password)
       }
     }
-    userId = model.add('auths', user, done);
     req = {
       body: {
         email,
@@ -38,30 +38,23 @@ describe('routeLogin', () => {
       session: {},
       login: (userId, next) => next()
     }
+    return model.add('auths', user);
   });
 
-  it('should login', (done) => {
-    routeLogin(req)
+  it('should login', () => {
+    return routeLogin(req)
       .then((data) => {
         assert(!data);
         assert.equal(req.session.userId, userId);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 
-  it('should not login when no email', (done) => {
+  it('should not login when no email', () => {
     delete req.body.email;
-    routeLogin(req)
+    return routeLogin(req)
       .then((data) => {
         assert(data && data.info);
         assert(!req.session.userId);
-        done();
-      })
-      .catch((err) => {
-        done('catch is called ' + err);
       });
   });
 });

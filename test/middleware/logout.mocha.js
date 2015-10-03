@@ -12,8 +12,8 @@ let password;
 let userId;
 
 describe('Middleware logout', () => {
-  beforeEach((done) => {
-    util
+  beforeEach(() => {
+    return util
       .getRequest()
       .then((r) => {
         request = r;
@@ -22,53 +22,54 @@ describe('Middleware logout', () => {
         email = util.generateEmail();
         password = util.generatePassword();
         let model = auth.store.createModel();
+        userId = model.id();
 
         let user = {
+          _id: userId,
           email: email,
           local: {
             hash: util.makeHash(password)
           }
         }
-        userId = model.add('auths', user, done);
+        return model.add('auths', user);
       });
   });
 
-  it('should logout', (done) => {
-    request
+  it('should logout', () => {
+    return request
       .get(loginPath)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .end((err, res) => {
-        assert.equal(err, undefined);
+      .then((res) => {
         let {success, url, info} = res.body;
         assert(!info);
         assert(success);
         assert(url);
 
-        util.getUserIdFromSession(res, memoryStore, (err, id) => {
-          assert(!err);
-          assert.equal(id, userId);
+        return util
+          .getUserIdFromSession(res, memoryStore)
+          .then((id) => {
+            assert.equal(id, userId);
 
-          request
-            .get(path)
-            .send({email, password})
-            .set('X-Requested-With', 'XMLHttpRequest')
-            .expect('Content-Type', /json/)
-            .expect(200)
-            .end((err, res) => {
-              assert.equal(err, undefined);
-              let {success, url, info} = res.body;
-              assert(!info);
-              assert(success);
-              assert(url);
+            request
+              .get(path)
+              .send({email, password})
+              .set('X-Requested-With', 'XMLHttpRequest')
+              .expect('Content-Type', /json/)
+              .expect(200)
+              .then((res) => {
+                let {success, url, info} = res.body;
+                assert(!info);
+                assert(success);
+                assert(url);
 
-              let cookie = util.getCookie(res);
-              assert(!cookie);
-              done();
-            });
-        });
+                let cookie = util.getCookie(res);
+                assert(!cookie);
+              });
+
+          });
       });
   });
 });
