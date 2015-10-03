@@ -15,10 +15,13 @@
   "dependencies": {
     "babel": "^5.8.23",
     "bcrypt": "^0.8.5",
-    "passport": "^0.3.0",
-    "superagent": "^1.4.0"
+    "passport": "^0.3.0"
   },
   "devDependencies": {
-    "mocha": "^2.3.3"
+    "body-parser": "^1.14.1",
+    "express": "^4.13.3",
+    "express-session": "^1.11.3",
+    "mocha": "^2.3.3",
+    "supertest": "^1.1.0"
   }
 }
