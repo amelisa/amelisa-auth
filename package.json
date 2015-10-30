@@ -1,5 +1,5 @@
 {
-  "name": "engine-auth",
+  "name": "amelisa-auth",
   "version": "0.1.0",
   "description": "",
   "main": "lib",
@@ -8,7 +8,7 @@
     "test": "mocha --compilers js:babel/register \"test/**/*.mocha.js\""
   },
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "peerDependencies": {
     "react": "0.13.x"
   },

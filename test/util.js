@@ -1,4 +1,4 @@
-import { MemoryStorage, Store } from 'engine';
+import { MemoryStorage, Store } from 'amelisa';
 import supertest from 'supertest-as-promised';
 import bcrypt from 'bcrypt';
 import express from 'express';
