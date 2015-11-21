@@ -1,29 +1,29 @@
-import assert from 'assert';
-import util from '../util';
-import { default as changePasswordInit } from '../../lib/api/changePassword';
+import assert from 'assert'
+import util from '../util'
+import { default as changePasswordInit } from '../../lib/api/changePassword'
 
-let auth;
-let changePassword;
-let model;
-let userId;
-let oldpassword;
-let password;
+let auth
+let changePassword
+let model
+let userId
+let oldpassword
+let password
 
 before(() => {
   return util.getAuth()
     .then((a) => {
       auth = a
-      changePassword = changePasswordInit.bind(auth);
-    });
-});
+      changePassword = changePasswordInit.bind(auth)
+    })
+})
 
 describe('changePassword', () => {
   beforeEach(() => {
-    model = auth.store.createModel();
-    userId = model.id();
-    oldpassword = util.generatePassword();
-    password = util.generatePassword();
-  });
+    model = auth.store.createModel()
+    userId = model.id()
+    oldpassword = util.generatePassword()
+    password = util.generatePassword()
+  })
 
   it('should changePassword', () => {
     let user = {
@@ -37,17 +37,17 @@ describe('changePassword', () => {
       .then(() => {
         return changePassword(userId, oldpassword, password)
           .then((data) => {
-            assert(!data);
+            assert(!data)
             return model
               .fetch('auths', userId)
               .then(() => {
-                let hash = model.get('auths', userId, 'local.hash');
-                assert(hash);
-                assert(util.compare(password, hash));
-              });
-          });
-      });
-  });
+                let hash = model.get('auths', userId, 'local.hash')
+                assert(hash)
+                assert(util.compare(password, hash))
+              })
+          })
+      })
+  })
 
   it('should not changePassword if no local provider', () => {
     let user = {
@@ -58,10 +58,10 @@ describe('changePassword', () => {
       .then(() => {
         changePassword(userId, oldpassword, password)
           .then((data) => {
-            assert(data && data.info);
-          });
-      });
-  });
+            assert(data && data.info)
+          })
+      })
+  })
 
   it('should not changePassword if wrong oldpassword', () => {
     let user = {
@@ -70,22 +70,22 @@ describe('changePassword', () => {
         hash: util.makeHash(oldpassword)
       }
     }
-    oldpassword = util.generatePassword();
+    oldpassword = util.generatePassword()
 
     return model
       .add('auths', user)
       .then(() => {
         changePassword(userId, oldpassword, password)
           .then((data) => {
-            assert(data && data.info);
-          });
-      });
-  });
+            assert(data && data.info)
+          })
+      })
+  })
 
   it('should not changePassword if no user', () => {
     return changePassword(userId, password)
       .then((data) => {
-        assert(data && data.info);
-      });
-  });
-});
+        assert(data && data.info)
+      })
+  })
+})

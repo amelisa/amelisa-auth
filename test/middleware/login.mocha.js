@@ -1,26 +1,26 @@
-import assert from 'assert';
-import util from '../util';
+import assert from 'assert'
+import util from '../util'
 
-const path = '/auth/login';
-let request;
-let auth;
-let memoryStore;
-let email;
-let password;
-let userId;
+const path = '/auth/login'
+let request
+let auth
+let memoryStore
+let email
+let password
+let userId
 
 describe('Middleware login', () => {
   beforeEach(() => {
     return util
       .getRequest()
       .then((r) => {
-        request = r;
-        auth = request.app.auth;
-        memoryStore = request.app.memoryStore;
-        email = util.generateEmail();
-        password = util.generatePassword();
-        let model = auth.store.createModel();
-        userId = model.id();
+        request = r
+        auth = request.app.auth
+        memoryStore = request.app.memoryStore
+        email = util.generateEmail()
+        password = util.generatePassword()
+        let model = auth.store.createModel()
+        userId = model.id()
 
         let user = {
           _id: userId,
@@ -29,9 +29,9 @@ describe('Middleware login', () => {
             hash: util.makeHash(password)
           }
         }
-        return model.add('auths', user);
-      });
-  });
+        return model.add('auths', user)
+      })
+  })
 
   it('should login', () => {
     return request
@@ -41,18 +41,18 @@ describe('Middleware login', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(!info);
-        assert(success);
-        assert(url);
+        let {success, url, info} = res.body
+        assert(!info)
+        assert(success)
+        assert(url)
 
         return util
           .getUserIdFromSession(res, memoryStore)
           .then((id) => {
-            assert.equal(id, userId);
-          });
-      });
-  });
+            assert.equal(id, userId)
+          })
+      })
+  })
 
   it('should not login when no credentials', () => {
     return request
@@ -61,18 +61,18 @@ describe('Middleware login', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
         return util
           .getUserIdFromSession(res, memoryStore)
           .then((id) => {
-            assert.notEqual(id, userId);
-          });
-      });
-  });
+            assert.notEqual(id, userId)
+          })
+      })
+  })
 
   it('should not login when no email', () => {
     request
@@ -82,18 +82,18 @@ describe('Middleware login', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
         return util
           .getUserIdFromSession(res, memoryStore)
           .then((id) => {
-            assert.notEqual(id, userId);
-          });
-      });
-  });
+            assert.notEqual(id, userId)
+          })
+      })
+  })
 
   it('should not login when no password', () => {
     request
@@ -103,18 +103,18 @@ describe('Middleware login', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
         return util
           .getUserIdFromSession(res, memoryStore)
           .then((id) => {
-            assert.notEqual(id, userId);
-          });
-      });
-  });
+            assert.notEqual(id, userId)
+          })
+      })
+  })
 
   it('should not login when email is wrong', () => {
     request
@@ -124,18 +124,18 @@ describe('Middleware login', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
         return util
           .getUserIdFromSession(res, memoryStore)
           .then((id) => {
-            assert.notEqual(id, userId);
-          });
-      });
-  });
+            assert.notEqual(id, userId)
+          })
+      })
+  })
 
   it('should not login when password is wrong', () => {
     request
@@ -145,16 +145,16 @@ describe('Middleware login', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
         return util
           .getUserIdFromSession(res, memoryStore)
           .then((id) => {
-            assert.notEqual(id, userId);
-          });
-      });
-  });
-});
+            assert.notEqual(id, userId)
+          })
+      })
+  })
+})

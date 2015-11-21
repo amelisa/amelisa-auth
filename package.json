@@ -4,7 +4,7 @@
   "description": "",
   "main": "lib",
   "scripts": {
-    "lint": "eslint lib",
+    "lint": "standard | snazzy",
     "test": "mocha --compilers js:babel/register \"test/**/*.mocha.js\""
   },
   "author": "",
@@ -18,11 +18,26 @@
   },
   "devDependencies": {
     "babel": "^5.8.23",
+    "babel-eslint": "^4.1.5",
     "body-parser": "^1.14.1",
     "express": "^4.13.3",
     "express-session": "^1.11.3",
     "mocha": "^2.3.3",
+    "snazzy": "^2.0.1",
+    "standard": "^5.4.1",
     "supertest": "^1.1.0",
     "supertest-as-promised": "^2.0.2"
+  },
+  "standard": {
+    "globals": [
+      "assert",
+      "describe",
+      "it",
+      "before",
+      "beforeEach",
+      "after",
+      "afterEach"
+    ],
+    "parser": "babel-eslint"
   }
 }

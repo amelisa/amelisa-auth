@@ -1,25 +1,25 @@
-import assert from 'assert';
-import util from '../util';
+import assert from 'assert'
+import util from '../util'
 
-const path = '/auth/recoverpassword';
+const path = '/auth/recoverpassword'
 
-let request;
-let auth;
-let email;
-let password;
-let userId;
+let request
+let auth
+let email
+let password
+let userId
 
 describe('Middleware recover password', () => {
   beforeEach(() => {
     return util
       .getRequest()
       .then((r) => {
-        request = r;
-        auth = request.app.auth;
-        email = util.generateEmail();
-        password = util.generatePassword();
-        let model = auth.store.createModel();
-        userId = model.id();
+        request = r
+        auth = request.app.auth
+        email = util.generateEmail()
+        password = util.generatePassword()
+        let model = auth.store.createModel()
+        userId = model.id()
 
         let user = {
           _id: userId,
@@ -28,9 +28,9 @@ describe('Middleware recover password', () => {
             hash: util.makeHash(password)
           }
         }
-        return model.add('auths', user);
-      });
-  });
+        return model.add('auths', user)
+      })
+  })
 
   it('should recover password and set secret', () => {
     return request
@@ -40,17 +40,17 @@ describe('Middleware recover password', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, info} = res.body;
-        assert(!info);
-        assert(success);
+        let {success, info} = res.body
+        assert(!info)
+        assert(success)
 
-        let model = auth.store.createModel();
+        let model = auth.store.createModel()
         return model
           .fetch('auths', userId)
           .then(() => {
-            let user = model.get('auths', userId);
-            assert(user.local.secret);
-          });
-      });
-  });
-});
+            let user = model.get('auths', userId)
+            assert(user.local.secret)
+          })
+      })
+  })
+})

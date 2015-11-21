@@ -1,26 +1,25 @@
-import assert from 'assert';
-import util from '../util';
+import assert from 'assert'
+import util from '../util'
 
-const path = '/auth/register';
-let request;
-let auth;
-let memoryStore;
-let email;
-let password;
-let userId;
+const path = '/auth/register'
+let request
+let auth
+let memoryStore
+let email
+let password
 
 describe('Middleware register', () => {
   beforeEach(() => {
     return util
       .getRequest()
       .then((r) => {
-        request = r;
-        auth = request.app.auth;
-        memoryStore = request.app.memoryStore;
-        email = util.generateEmail();
-        password = util.generatePassword();
-      });
-  });
+        request = r
+        auth = request.app.auth
+        memoryStore = request.app.memoryStore
+        email = util.generateEmail()
+        password = util.generatePassword()
+      })
+  })
 
   it('should register', () => {
     return request
@@ -30,30 +29,30 @@ describe('Middleware register', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(!info);
-        assert(success);
-        assert(url);
+        let {success, url, info} = res.body
+        assert(!info)
+        assert(success)
+        assert(url)
 
-        let model = auth.store.createModel();
-        let userQuery = model.query('auths', {});
+        let model = auth.store.createModel()
+        let userQuery = model.query('auths', {})
         return userQuery
           .fetch()
           .then(() => {
-            let users = userQuery.get();
-            assert.equal(users.length, 1);
-            let user = users[0];
-            assert.equal(user.email, email);
-            assert(util.compare(password, user.local.hash));
+            let users = userQuery.get()
+            assert.equal(users.length, 1)
+            let user = users[0]
+            assert.equal(user.email, email)
+            assert(util.compare(password, user.local.hash))
 
             return util
               .getUserIdFromSession(res, memoryStore)
               .then((id) => {
-                assert.equal(id, user._id);
-              });
-          });
-      });
-  });
+                assert.equal(id, user._id)
+              })
+          })
+      })
+  })
 
   it('should not register when no credentials', () => {
     return request
@@ -62,21 +61,21 @@ describe('Middleware register', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
-        let model = auth.store.createModel();
-        let userQuery = model.query('auths', {});
+        let model = auth.store.createModel()
+        let userQuery = model.query('auths', {})
         return userQuery
           .fetch()
           .then(() => {
-            let users = userQuery.get();
-            assert.equal(users.length, 0);
-          });
-      });
-  });
+            let users = userQuery.get()
+            assert.equal(users.length, 0)
+          })
+      })
+  })
 
   it('should not register when no email', () => {
     return request
@@ -86,21 +85,21 @@ describe('Middleware register', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
-        let model = auth.store.createModel();
-        let userQuery = model.query('auths', {});
+        let model = auth.store.createModel()
+        let userQuery = model.query('auths', {})
         return userQuery
           .fetch()
           .then(() => {
-            let users = userQuery.get();
-            assert.equal(users.length, 0);
-          });
-      });
-  });
+            let users = userQuery.get()
+            assert.equal(users.length, 0)
+          })
+      })
+  })
 
   it('should not register when no password', () => {
     return request
@@ -110,21 +109,21 @@ describe('Middleware register', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
-        let model = auth.store.createModel();
-        let userQuery = model.query('auths', {});
+        let model = auth.store.createModel()
+        let userQuery = model.query('auths', {})
         return userQuery
           .fetch()
           .then(() => {
-            let users = userQuery.get();
-            assert.equal(users.length, 0);
-          });
-      });
-  });
+            let users = userQuery.get()
+            assert.equal(users.length, 0)
+          })
+      })
+  })
 
   it('should not register when no confirm', () => {
     return request
@@ -134,21 +133,21 @@ describe('Middleware register', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
-        let model = auth.store.createModel();
-        let userQuery = model.query('auths', {});
+        let model = auth.store.createModel()
+        let userQuery = model.query('auths', {})
         return userQuery
           .fetch()
           .then(() => {
-            let users = userQuery.get();
-            assert.equal(users.length, 0);
-          });
-      });
-  });
+            let users = userQuery.get()
+            assert.equal(users.length, 0)
+          })
+      })
+  })
 
   it('should not register when email format wrong', () => {
     return request
@@ -158,24 +157,24 @@ describe('Middleware register', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
-        let model = auth.store.createModel();
-        let userQuery = model.query('auths', {});
+        let model = auth.store.createModel()
+        let userQuery = model.query('auths', {})
         return userQuery
           .fetch()
           .then(() => {
-            let users = userQuery.get();
-            assert.equal(users.length, 0);
-          });
-      });
-  });
+            let users = userQuery.get()
+            assert.equal(users.length, 0)
+          })
+      })
+  })
 
   it('should not register when password length < 6', () => {
-    password = 'asdf';
+    password = 'asdf'
     return request
       .get(path)
       .send({email, password, confirm: password})
@@ -183,21 +182,21 @@ describe('Middleware register', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
-        let model = auth.store.createModel();
-        let userQuery = model.query('auths', {});
+        let model = auth.store.createModel()
+        let userQuery = model.query('auths', {})
         return userQuery
           .fetch()
           .then(() => {
-            let users = userQuery.get();
-            assert.equal(users.length, 0);
-          });
-      });
-  });
+            let users = userQuery.get()
+            assert.equal(users.length, 0)
+          })
+      })
+  })
 
   it('should not register when password isnt confirm', () => {
     return request
@@ -207,19 +206,19 @@ describe('Middleware register', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(info);
-        assert(!success);
-        assert(!url);
+        let {success, url, info} = res.body
+        assert(info)
+        assert(!success)
+        assert(!url)
 
-        let model = auth.store.createModel();
-        let userQuery = model.query('auths', {});
+        let model = auth.store.createModel()
+        let userQuery = model.query('auths', {})
         return userQuery
           .fetch()
           .then(() => {
-            let users = userQuery.get();
-            assert.equal(users.length, 0);
-          });
-      });
-  });
-});
+            let users = userQuery.get()
+            assert.equal(users.length, 0)
+          })
+      })
+  })
+})

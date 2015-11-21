@@ -1,28 +1,28 @@
-import assert from 'assert';
-import util from '../util';
+import assert from 'assert'
+import util from '../util'
 
-const path = '/auth/changeemail';
-const loginPath = '/auth/login';
+const path = '/auth/changeemail'
+const loginPath = '/auth/login'
 
-let request;
-let auth;
-let email;
-let newemail;
-let password;
-let userId;
+let request
+let auth
+let email
+let newemail
+let password
+let userId
 
 describe('Middleware change email', () => {
   beforeEach(() => {
     return util
       .getRequest()
       .then((r) => {
-        request = r;
-        auth = request.app.auth;
-        email = util.generateEmail();
-        newemail = util.generateEmail();
-        password = util.generatePassword();
-        let model = auth.store.createModel();
-        userId = model.id();
+        request = r
+        auth = request.app.auth
+        email = util.generateEmail()
+        newemail = util.generateEmail()
+        password = util.generatePassword()
+        let model = auth.store.createModel()
+        userId = model.id()
 
         let user = {
           _id: userId,
@@ -31,9 +31,9 @@ describe('Middleware change email', () => {
             hash: util.makeHash(password)
           }
         }
-        return model.add('auths', user);
-      });
-  });
+        return model.add('auths', user)
+      })
+  })
 
   it('should change email', () => {
     return request
@@ -43,10 +43,10 @@ describe('Middleware change email', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(!info);
-        assert(success);
-        assert(url);
+        let {success, url, info} = res.body
+        assert(!info)
+        assert(success)
+        assert(url)
 
         return request
           .get(path)
@@ -56,20 +56,20 @@ describe('Middleware change email', () => {
           .expect('Content-Type', /json/)
           .expect(200)
           .then((res) => {
-            let {success, info} = res.body;
-            assert(!info);
-            assert(success);
+            let {success, info} = res.body
+            assert(!info)
+            assert(success)
 
-            let model = auth.store.createModel();
+            let model = auth.store.createModel()
             return model
               .fetch('auths', userId)
               .then(() => {
-                let user = model.get('auths', userId);
-                assert.equal(user.email, newemail);
-              });
-          });
-      });
-  });
+                let user = model.get('auths', userId)
+                assert.equal(user.email, newemail)
+              })
+          })
+      })
+  })
 
   it('should not change email when no email', () => {
     return request
@@ -79,10 +79,10 @@ describe('Middleware change email', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(!info);
-        assert(success);
-        assert(url);
+        let {success, url, info} = res.body
+        assert(!info)
+        assert(success)
+        assert(url)
 
         return request
           .get(path)
@@ -91,20 +91,20 @@ describe('Middleware change email', () => {
           .expect('Content-Type', /json/)
           .expect(200)
           .then((res) => {
-            let {success, info} = res.body;
-            assert(info);
-            assert(!success);
+            let {success, info} = res.body
+            assert(info)
+            assert(!success)
 
-            let model = auth.store.createModel();
+            let model = auth.store.createModel()
             return model
               .fetch('auths', userId)
               .then(() => {
-                let user = model.get('auths', userId);
-                assert.equal(user.email, email);
-              });
-          });
-      });
-  });
+                let user = model.get('auths', userId)
+                assert.equal(user.email, email)
+              })
+          })
+      })
+  })
 
   it('should not change email when same email', () => {
     return request
@@ -114,10 +114,10 @@ describe('Middleware change email', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, url, info} = res.body;
-        assert(!info);
-        assert(success);
-        assert(url);
+        let {success, url, info} = res.body
+        assert(!info)
+        assert(success)
+        assert(url)
 
         return request
           .get(path)
@@ -127,20 +127,20 @@ describe('Middleware change email', () => {
           .expect('Content-Type', /json/)
           .expect(200)
           .then((res) => {
-            let {success, info} = res.body;
-            assert(info);
-            assert(!success);
+            let {success, info} = res.body
+            assert(info)
+            assert(!success)
 
-            let model = auth.store.createModel();
+            let model = auth.store.createModel()
             return model
               .fetch('auths', userId)
               .then(() => {
-                let user = model.get('auths', userId);
-                assert.equal(user.email, email);
-              });
-          });
-      });
-  });
+                let user = model.get('auths', userId)
+                assert.equal(user.email, email)
+              })
+          })
+      })
+  })
 
   it('should not change email when not loggedIn', () => {
     return request
@@ -150,17 +150,17 @@ describe('Middleware change email', () => {
       .expect('Content-Type', /json/)
       .expect(200)
       .then((res) => {
-        let {success, info} = res.body;
-        assert(info);
-        assert(!success);
+        let {success, info} = res.body
+        assert(info)
+        assert(!success)
 
-        let model = auth.store.createModel();
+        let model = auth.store.createModel()
         return model
           .fetch('auths', userId)
           .then(() => {
-            let user = model.get('auths', userId);
-            assert.equal(user.email, email);
-          });
-      });
-  });
-});
+            let user = model.get('auths', userId)
+            assert.equal(user.email, email)
+          })
+      })
+  })
+})
