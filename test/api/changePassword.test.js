@@ -1,6 +1,6 @@
 import assert from 'assert'
 import util from '../util'
-import { default as changePasswordInit } from '../../lib/api/changePassword'
+import { default as changePasswordInit } from '../../src/api/changePassword'
 
 let auth
 let changePassword

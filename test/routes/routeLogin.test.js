@@ -1,29 +1,27 @@
 import assert from 'assert'
 import util from '../util'
-import { default as routeChangePasswordInit } from '../../lib/routes/routeChangePassword'
+import { default as routeLoginInit } from '../../src/routes/routeLogin'
 
 let auth
-let routeChangePassword
+let routeLogin
 let req
 let email
 let password
-let newpassword
 let userId
 
 before(() => {
   return util.getAuth()
     .then((a) => {
       auth = a
-      routeChangePassword = routeChangePasswordInit.bind(auth)
+      routeLogin = routeLoginInit.bind(auth)
     })
 })
 
-describe('routeChangePassword', () => {
+describe('routeLogin', () => {
   beforeEach(() => {
     let model = auth.store.createModel()
     email = util.generateEmail()
     password = util.generatePassword()
-    newpassword = util.generatePassword()
     userId = model.id()
     let user = {
       _id: userId,
@@ -34,21 +32,29 @@ describe('routeChangePassword', () => {
     }
     req = {
       body: {
-        oldpassword: password,
-        password: newpassword,
-        confirm: newpassword
+        email,
+        password
       },
-      session: {
-        userId
-      }
+      session: {},
+      login: (userId, next) => next()
     }
     return model.add('auths', user)
   })
 
-  it('should change password', () => {
-    routeChangePassword(req)
+  it('should login', () => {
+    return routeLogin(req)
       .then((data) => {
         assert(!data)
+        assert.equal(req.session.userId, userId)
+      })
+  })
+
+  it('should not login when no email', () => {
+    delete req.body.email
+    return routeLogin(req)
+      .then((data) => {
+        assert(data && data.info)
+        assert(!req.session.userId)
       })
   })
 })

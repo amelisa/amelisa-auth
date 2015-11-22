@@ -1,6 +1,6 @@
 import assert from 'assert'
 import util from '../util'
-import { default as passwordMatchInit } from '../../lib/api/passwordMatch'
+import { default as passwordMatchInit } from '../../src/api/passwordMatch'
 
 let auth
 let passwordMatch

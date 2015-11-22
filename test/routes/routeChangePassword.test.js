@@ -1,27 +1,29 @@
 import assert from 'assert'
 import util from '../util'
-import { default as routeLogoutInit } from '../../lib/routes/routeLogout'
+import { default as routeChangePasswordInit } from '../../src/routes/routeChangePassword'
 
 let auth
-let routeLogout
+let routeChangePassword
 let req
 let email
 let password
+let newpassword
 let userId
 
 before(() => {
   return util.getAuth()
     .then((a) => {
       auth = a
-      routeLogout = routeLogoutInit.bind(auth)
+      routeChangePassword = routeChangePasswordInit.bind(auth)
     })
 })
 
-describe('routeLogout', () => {
+describe('routeChangePassword', () => {
   beforeEach(() => {
     let model = auth.store.createModel()
     email = util.generateEmail()
     password = util.generatePassword()
+    newpassword = util.generatePassword()
     userId = model.id()
     let user = {
       _id: userId,
@@ -32,22 +34,21 @@ describe('routeLogout', () => {
     }
     req = {
       body: {
-        email,
-        password
+        oldpassword: password,
+        password: newpassword,
+        confirm: newpassword
       },
       session: {
         userId
-      },
-      logout: () => {}
+      }
     }
     return model.add('auths', user)
   })
 
-  it('should logout', () => {
-    return routeLogout(req)
+  it('should change password', () => {
+    routeChangePassword(req)
       .then((data) => {
         assert(!data)
-        assert(!req.session.userId)
       })
   })
 })

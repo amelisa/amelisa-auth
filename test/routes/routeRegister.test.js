@@ -1,6 +1,6 @@
 import assert from 'assert'
 import util from '../util'
-import { default as routeRegisterInit } from '../../lib/routes/routeRegister'
+import { default as routeRegisterInit } from '../../src/routes/routeRegister'
 
 let auth
 let routeRegister

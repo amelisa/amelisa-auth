@@ -5,7 +5,7 @@ import express from 'express'
 import bodyParser from 'body-parser'
 import session from 'express-session'
 let MemoryStore = session.MemoryStore
-import auth from '../lib'
+import auth from '../src'
 
 let minFactor = 4
 let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'

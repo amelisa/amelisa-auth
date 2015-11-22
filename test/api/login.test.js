@@ -1,6 +1,6 @@
 import assert from 'assert'
 import util from '../util'
-import { default as loginInit } from '../../lib/api/login'
+import { default as loginInit } from '../../src/api/login'
 
 let auth
 let login

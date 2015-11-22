@@ -1,6 +1,6 @@
 import assert from 'assert'
 import util from '../util'
-import { default as getUserByEmailInit } from '../../lib/api/getUserByEmail'
+import { default as getUserByEmailInit } from '../../src/api/getUserByEmail'
 
 let auth
 let getUserByEmail

@@ -1,9 +1,9 @@
 import assert from 'assert'
 import util from '../util'
-import { default as routeLoginInit } from '../../lib/routes/routeLogin'
+import { default as routeChangeEmailInit } from '../../src/routes/routeChangeEmail'
 
 let auth
-let routeLogin
+let routeChangeEmail
 let req
 let email
 let password
@@ -13,11 +13,11 @@ before(() => {
   return util.getAuth()
     .then((a) => {
       auth = a
-      routeLogin = routeLoginInit.bind(auth)
+      routeChangeEmail = routeChangeEmailInit.bind(auth)
     })
 })
 
-describe('routeLogin', () => {
+describe('routeChangeEmail', () => {
   beforeEach(() => {
     let model = auth.store.createModel()
     email = util.generateEmail()
@@ -32,29 +32,19 @@ describe('routeLogin', () => {
     }
     req = {
       body: {
-        email,
-        password
+        email: 'new@email.com'
       },
-      session: {},
-      login: (userId, next) => next()
+      session: {
+        userId
+      }
     }
     return model.add('auths', user)
   })
 
-  it('should login', () => {
-    return routeLogin(req)
+  it('should change email', () => {
+    return routeChangeEmail(req)
       .then((data) => {
         assert(!data)
-        assert.equal(req.session.userId, userId)
-      })
-  })
-
-  it('should not login when no email', () => {
-    delete req.body.email
-    return routeLogin(req)
-      .then((data) => {
-        assert(data && data.info)
-        assert(!req.session.userId)
       })
   })
 })
