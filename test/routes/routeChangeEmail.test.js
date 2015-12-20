@@ -9,16 +9,13 @@ let email
 let password
 let userId
 
-before(() => {
-  return util.getAuth()
-    .then((a) => {
-      auth = a
-      routeChangeEmail = routeChangeEmailInit.bind(auth)
-    })
+before(async () => {
+  auth = await util.getAuth()
+  routeChangeEmail = routeChangeEmailInit.bind(auth)
 })
 
 describe('routeChangeEmail', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     let model = auth.store.createModel()
     email = util.generateEmail()
     password = util.generatePassword()
@@ -38,13 +35,11 @@ describe('routeChangeEmail', () => {
         userId
       }
     }
-    return model.add('auths', user)
+    await model.add('auths', user)
   })
 
-  it('should change email', () => {
-    return routeChangeEmail(req)
-      .then((data) => {
-        assert(!data)
-      })
+  it('should change email', async () => {
+    let data = await routeChangeEmail(req)
+    assert(!data)
   })
 })

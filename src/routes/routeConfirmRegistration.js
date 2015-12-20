@@ -1,12 +1,11 @@
-function routeConfirmRegistration (req) {
-  return Promise
-    .resolve(this.parseConfirmEmailRequest(req))
-    .then((userId) => {
-      return this
-        .sendRegistrationConfirmationComplete(userId)
-        .then(() => this.confirmEmail(userId))
-        .then(() => this.login(userId, req))
-    })
+async function routeConfirmRegistration (req) {
+  let userId = await this.parseConfirmEmailRequest(req)
+
+  await this.sendRegistrationConfirmationComplete(userId)
+
+  await this.confirmEmail(userId)
+
+  await this.login(userId, req)
 }
 
 export default routeConfirmRegistration

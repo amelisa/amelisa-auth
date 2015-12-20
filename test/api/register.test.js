@@ -10,16 +10,13 @@ let email
 let password
 let userData
 
-before(() => {
-  return util.getAuth()
-    .then((a) => {
-      auth = a
-      register = registerInit.bind(auth)
-    })
+before(async () => {
+  auth = await util.getAuth()
+  register = registerInit.bind(auth)
 })
 
 describe('register', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     model = auth.store.createModel()
     userId = model.id()
     email = util.generateEmail()
@@ -29,77 +26,54 @@ describe('register', () => {
     }
   })
 
-  it('should register and create user', () => {
-    return register(userId, email, password, userData)
-      .then((data) => {
-        assert(!data)
-        return model
-          .fetch('auths', userId)
-          .then(() => {
-            let user = model.get('auths', userId)
-            assert(user)
-            assert.equal(user._id, userId)
-            assert.equal(user.email, email)
-            assert.equal(user.a, userData.a)
-            assert(user.local)
-            assert(user.local.hash)
-            assert(util.compare(password, user.local.hash))
-          })
-      })
+  it('should register and create user', async () => {
+    let data = await register(userId, email, password, userData)
+    assert(!data)
+    await model.fetch('auths', userId)
+    let user = model.get('auths', userId)
+    assert(user)
+    assert.equal(user._id, userId)
+    assert.equal(user.email, email)
+    assert.equal(user.a, userData.a)
+    assert(user.local)
+    assert(user.local.hash)
+    assert(util.compare(password, user.local.hash))
   })
 
-  it('should just save profile if user with userId exists but without provider', () => {
+  it('should just save profile if user with userId exists but without provider', async () => {
     let dbUser = {
       _id: userId
     }
-    return model
-      .add('auths', dbUser)
-      .then(() => {
-        return register(userId, email, password, userData)
-          .then((data) => {
-            assert(!data)
-            return model
-              .fetch('auths', userId)
-              .then(() => {
-                let user = model.get('auths', userId)
-                assert(user)
-                assert.equal(user._id, userId)
-                assert(!user.email)
-                assert(!user.a)
-                assert(user.local)
-                assert(user.local.hash)
-                assert(util.compare(password, user.local.hash))
-              })
-          })
-      })
+    await model.add('auths', dbUser)
+    let data = await register(userId, email, password, userData)
+    assert(!data)
+    await model.fetch('auths', userId)
+    let user = model.get('auths', userId)
+    assert(user)
+    assert.equal(user._id, userId)
+    assert(!user.email)
+    assert(!user.a)
+    assert(user.local)
+    assert(user.local.hash)
+    assert(util.compare(password, user.local.hash))
   })
 
-  it('should not register when user with same email exists', () => {
+  it('should not register when user with same email exists', async () => {
     let dbUser = {
       email: email
     }
-    return model
-      .add('auths', dbUser)
-      .then(() => {
-        return register(userId, email, password, userData)
-          .then((data) => {
-            assert(data && data.info)
-          })
-      })
+    await model.add('auths', dbUser)
+    let data = await register(userId, email, password, userData)
+    assert(data && data.info)
   })
 
-  it('should not register when user with same userId and provider exists', () => {
+  it('should not register when user with same userId and provider exists', async () => {
     let dbUser = {
       _id: userId,
       local: {}
     }
-    return model
-      .add('auths', dbUser)
-      .then(() => {
-        return register(userId, email, password, userData)
-          .then((data) => {
-            assert(data && data.info)
-          })
-      })
+    await model.add('auths', dbUser)
+    let data = await register(userId, email, password, userData)
+    assert(data && data.info)
   })
 })

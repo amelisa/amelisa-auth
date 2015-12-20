@@ -1,17 +1,11 @@
-function resetPasswordSecret (email) {
+async function resetPasswordSecret (email) {
   let model = this.store.createModel()
+  let user = await this.getUserByEmail(email)
+  let secret = model.id()
 
-  return this
-    .getUserByEmail(email)
-    .then((user) => {
-      let secret = model.id()
+  await model.set(['auths', user._id, 'local.secret'], secret)
 
-      return model
-        .set(['auths', user._id, 'local.secret'], secret)
-        .then(() => {
-          return {userId: user._id, email, secret}
-        })
-    })
+  return {userId: user._id, secret}
 }
 
 export default resetPasswordSecret

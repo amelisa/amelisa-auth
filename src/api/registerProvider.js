@@ -1,30 +1,28 @@
-function registerProvider (userId, provider, profile, userData = {}) {
+async function registerProvider (userId, provider, profile, userData = {}) {
   let model = this.store.createModel()
   let userDoc = model.doc('auths', userId)
 
   profile.date = Date.now()
 
-  return userDoc
-    .fetch()
-    .then(() => {
-      let user = userDoc.get()
+  await userDoc.fetch()
 
-      if (user) {
-        if (user[provider]) {
-          return {
-            info: `Provider ${provider} for user ${userId} allready exists`
-          }
-        }
+  let user = userDoc.get()
 
-        return userDoc.set(provider, profile)
+  if (user) {
+    if (user[provider]) {
+      return {
+        info: `Provider ${provider} for user ${userId} allready exists`
       }
+    }
 
-      user = userData
-      user._id = userId
-      user[provider] = profile
+    return await userDoc.set(provider, profile)
+  }
 
-      return model.add('auths', user)
-    })
+  user = userData
+  user._id = userId
+  user[provider] = profile
+
+  await model.add('auths', user)
 }
 
 export default registerProvider

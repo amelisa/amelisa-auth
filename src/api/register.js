@@ -1,24 +1,18 @@
-function register (userId, email, password, userData = {}) {
+async function register (userId, email, password, userData = {}) {
   email = email.toLowerCase()
 
-  return this
-    .getUserByEmail(email)
-    .then((user) => {
-      if (user) return {info: 'User exist'}
+  let user = await this.getUserByEmail(email)
+  if (user) return {info: 'User exist'}
+  let { hash, salt } = await this.hash(password)
 
-      return this
-        .hash(password)
-        .then(({hash, salt}) => {
-          let profile = {
-            hash: hash
-          }
-          if (salt) profile.salt = salt
+  let profile = {
+    hash
+  }
+  if (salt) profile.salt = salt
 
-          userData.email = email
+  userData.email = email
 
-          return this.registerProvider(userId, 'local', profile, userData)
-        })
-    })
+  return this.registerProvider(userId, 'local', profile, userData)
 }
 
 export default register

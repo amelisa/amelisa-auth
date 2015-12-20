@@ -18,63 +18,44 @@ function gen () {
   return text
 }
 
-function getStore () {
+async function getStore () {
   let storage = new MemoryStorage()
-
-  return new Promise((resolve, reject) => {
-    storage
-      .init()
-      .then(() => {
-        let store = new Store(storage)
-
-        resolve(store)
-      })
-  })
+  await storage.init()
+  let store = new Store(storage)
+  return store
 }
 
-function getAuth () {
-  return new Promise((resolve, reject) => {
-    getStore()
-      .then((store) => {
-        auth.middleware(store)
-        resolve(auth)
-      })
-  })
+async function getAuth () {
+  let store = await getStore()
+  auth.middleware(store)
+  return auth
 }
 
-function getApp () {
-  return new Promise((resolve, reject) => {
-    getAuth()
-      .then((auth) => {
-        let store = auth.store
-        let memoryStore = new MemoryStore()
-        let sessionOptions = {
-          secret: 'secret',
-          store: memoryStore,
-          resave: false,
-          saveUninitialized: false
-        }
-        let app = express()
-        app.use(session(sessionOptions))
-        app.use(bodyParser.json())
-        app.use(store.modelMiddleware())
-        app.use(auth.middleware(store))
-        app.auth = auth
-        app.memoryStore = memoryStore
-        resolve(app)
-      })
-  })
+async function getApp () {
+  let auth = await getAuth()
+  let store = auth.store
+  let memoryStore = new MemoryStore()
+  let sessionOptions = {
+    secret: 'secret',
+    store: memoryStore,
+    resave: false,
+    saveUninitialized: false
+  }
+  let app = express()
+  app.use(session(sessionOptions))
+  app.use(bodyParser.json())
+  app.use(store.modelMiddleware())
+  app.use(auth.middleware(store))
+  app.auth = auth
+  app.memoryStore = memoryStore
+  return app
 }
 
-function getRequest () {
-  return new Promise((resolve, reject) => {
-    getApp()
-      .then((app) => {
-        let request = supertest(app)
-        request.app = app
-        resolve(request)
-      })
-  })
+async function getRequest () {
+  let app = await getApp()
+  let request = supertest(app)
+  request.app = app
+  return request
 }
 
 function getCookie (res) {

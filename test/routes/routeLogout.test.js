@@ -9,16 +9,13 @@ let email
 let password
 let userId
 
-before(() => {
-  return util.getAuth()
-    .then((a) => {
-      auth = a
-      routeLogout = routeLogoutInit.bind(auth)
-    })
+before(async () => {
+  auth = await util.getAuth()
+  routeLogout = routeLogoutInit.bind(auth)
 })
 
 describe('routeLogout', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     let model = auth.store.createModel()
     email = util.generateEmail()
     password = util.generatePassword()
@@ -40,14 +37,12 @@ describe('routeLogout', () => {
       },
       logout: () => {}
     }
-    return model.add('auths', user)
+    await model.add('auths', user)
   })
 
-  it('should logout', () => {
-    return routeLogout(req)
-      .then((data) => {
-        assert(!data)
-        assert(!req.session.userId)
-      })
+  it('should logout', async () => {
+    let data = await routeLogout(req)
+    assert(!data)
+    assert(!req.session.userId)
   })
 })

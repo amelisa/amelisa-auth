@@ -9,16 +9,13 @@ let email
 let password
 let userId
 
-before(() => {
-  return util.getAuth()
-    .then((a) => {
-      auth = a
-      routeRegister = routeRegisterInit.bind(auth)
-    })
+before(async () => {
+  auth = await util.getAuth()
+  routeRegister = routeRegisterInit.bind(auth)
 })
 
 describe('routeRegister', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     let model = auth.store.createModel()
     email = util.generateEmail()
     password = util.generatePassword()
@@ -36,11 +33,9 @@ describe('routeRegister', () => {
     }
   })
 
-  it('should register and login', () => {
-    return routeRegister(req)
-      .then((data) => {
-        assert(!data)
-        assert.equal(req.session.userId, userId)
-      })
+  it('should register and login', async () => {
+    let data = await routeRegister(req)
+    assert(!data)
+    assert.equal(req.session.userId, userId)
   })
 })

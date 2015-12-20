@@ -8,22 +8,19 @@ let model
 let userId
 let password
 
-before(() => {
-  return util.getAuth()
-    .then((a) => {
-      auth = a
-      passwordMatch = passwordMatchInit.bind(auth)
-    })
+before(async () => {
+  auth = await util.getAuth()
+  passwordMatch = passwordMatchInit.bind(auth)
 })
 
 describe('passwordMatch', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     model = auth.store.createModel()
     userId = model.id()
     password = util.generatePassword()
   })
 
-  it('should passwordMatch', () => {
+  it('should passwordMatch', async () => {
     let user = {
       _id: userId,
       local: {
@@ -31,13 +28,11 @@ describe('passwordMatch', () => {
       }
     }
 
-    return passwordMatch(user, password)
-      .then((match) => {
-        assert(match)
-      })
+    let match = await passwordMatch(user, password)
+    assert(match)
   })
 
-  it('should not passwordMatch', () => {
+  it('should not passwordMatch', async () => {
     let user = {
       _id: userId,
       local: {
@@ -46,9 +41,7 @@ describe('passwordMatch', () => {
     }
     password = util.generatePassword()
 
-    return passwordMatch(user, password)
-      .then((match) => {
-        assert(!match)
-      })
+    let match = await passwordMatch(user, password)
+    assert(!match)
   })
 })

@@ -1,26 +1,17 @@
-function setPassword (userId, password) {
+async function setPassword (userId, password) {
   let model = this.store.createModel()
   let userDoc = model.doc('auths', userId)
 
-  return userDoc
-    .fetch()
-    .then(() => {
-      let user = userDoc.get()
+  await userDoc.fetch()
 
-      if (!user) return {info: 'No user'}
+  let user = userDoc.get()
+  if (!user) return {info: 'No user'}
+  let { hash, salt } = await this.hash(password)
 
-      return this
-        .hash(password)
-        .then(({hash, salt}) => {
-          return userDoc
-            .set('local.hash', hash)
-            .then(() => {
-              if (!salt) return
+  await userDoc.set('local.hash', hash)
+  if (!salt) return
 
-              return userDoc.set('local.salt', salt)
-            })
-        })
-    })
+  await userDoc.set('local.salt', salt)
 }
 
 export default setPassword

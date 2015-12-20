@@ -1,12 +1,9 @@
-function resetPassword (secret, password) {
-  return this
-    .getUserBySecret(secret)
-    .then(({data, info}) => {
-      if (info) return {info}
+async function resetPassword (secret, password) {
+  let { data, info } = await this.getUserBySecret(secret)
+  if (info) return {info}
+  let { user } = data
 
-      let {user} = data
-      return this.setPassword(user._id, password)
-    })
+  await this.setPassword(user._id, password)
 }
 
 export default resetPassword

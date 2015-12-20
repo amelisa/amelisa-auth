@@ -1,5 +1,4 @@
-function sendResetPassword (secret, password) {
-  return Promise.resolve()
+async function sendResetPassword (secret, password) {
 }
 
 export default sendResetPassword

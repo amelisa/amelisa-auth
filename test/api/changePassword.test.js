@@ -9,15 +9,12 @@ let userId
 let oldpassword
 let password
 
-before(() => {
-  return util.getAuth()
-    .then((a) => {
-      auth = a
-      changePassword = changePasswordInit.bind(auth)
-    })
+before(async () => {
+  auth = await util.getAuth()
+  changePassword = changePasswordInit.bind(auth)
 })
 
-describe('changePassword', () => {
+describe('changePassword', async () => {
   beforeEach(() => {
     model = auth.store.createModel()
     userId = model.id()
@@ -25,45 +22,33 @@ describe('changePassword', () => {
     password = util.generatePassword()
   })
 
-  it('should changePassword', () => {
+  it('should changePassword', async () => {
     let user = {
       _id: userId,
       local: {
         hash: util.makeHash(oldpassword)
       }
     }
-    return model
-      .add('auths', user)
-      .then(() => {
-        return changePassword(userId, oldpassword, password)
-          .then((data) => {
-            assert(!data)
-            return model
-              .fetch('auths', userId)
-              .then(() => {
-                let hash = model.get('auths', userId, 'local.hash')
-                assert(hash)
-                assert(util.compare(password, hash))
-              })
-          })
-      })
+    await model.add('auths', user)
+    let data = await changePassword(userId, oldpassword, password)
+    assert(!data)
+
+    await model.fetch('auths', userId)
+    let hash = model.get('auths', userId, 'local.hash')
+    assert(hash)
+    assert(util.compare(password, hash))
   })
 
-  it('should not changePassword if no local provider', () => {
+  it('should not changePassword if no local provider', async () => {
     let user = {
       _id: userId
     }
-    return model
-      .add('auths', user)
-      .then(() => {
-        changePassword(userId, oldpassword, password)
-          .then((data) => {
-            assert(data && data.info)
-          })
-      })
+    await model.add('auths', user)
+    let data = await changePassword(userId, oldpassword, password)
+    assert(data && data.info)
   })
 
-  it('should not changePassword if wrong oldpassword', () => {
+  it('should not changePassword if wrong oldpassword', async () => {
     let user = {
       _id: userId,
       local: {
@@ -71,21 +56,13 @@ describe('changePassword', () => {
       }
     }
     oldpassword = util.generatePassword()
-
-    return model
-      .add('auths', user)
-      .then(() => {
-        changePassword(userId, oldpassword, password)
-          .then((data) => {
-            assert(data && data.info)
-          })
-      })
+    await model.add('auths', user)
+    let data = await changePassword(userId, oldpassword, password)
+    assert(data && data.info)
   })
 
-  it('should not changePassword if no user', () => {
-    return changePassword(userId, password)
-      .then((data) => {
-        assert(data && data.info)
-      })
+  it('should not changePassword if no user', async () => {
+    let data = await changePassword(userId, password)
+    assert(data && data.info)
   })
 })

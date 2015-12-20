@@ -12,63 +12,56 @@ let password
 let userId
 
 describe('Middleware logout', () => {
-  beforeEach(() => {
-    return util
-      .getRequest()
-      .then((r) => {
-        request = r
-        auth = request.app.auth
-        memoryStore = request.app.memoryStore
-        email = util.generateEmail()
-        password = util.generatePassword()
-        let model = auth.store.createModel()
-        userId = model.id()
+  beforeEach(async () => {
+    request = await util.getRequest()
+    auth = request.app.auth
+    memoryStore = request.app.memoryStore
+    email = util.generateEmail()
+    password = util.generatePassword()
+    let model = auth.store.createModel()
+    userId = model.id()
 
-        let user = {
-          _id: userId,
-          email: email,
-          local: {
-            hash: util.makeHash(password)
-          }
-        }
-        return model.add('auths', user)
-      })
+    let user = {
+      _id: userId,
+      email: email,
+      local: {
+        hash: util.makeHash(password)
+      }
+    }
+    await model.add('auths', user)
   })
 
-  it('should logout', () => {
-    return request
+  it('should logout', async () => {
+    let res = await request
       .get(loginPath)
       .send({email, password})
       .set('X-Requested-With', 'XMLHttpRequest')
       .expect('Content-Type', /json/)
       .expect(200)
-      .then((res) => {
-        let {success, url, info} = res.body
-        assert(!info)
-        assert(success)
-        assert(url)
 
-        return util
-          .getUserIdFromSession(res, memoryStore)
-          .then((id) => {
-            assert.equal(id, userId)
+    let { success, url, info } = res.body
+    assert(!info)
+    assert(success)
+    assert(url)
 
-            request
-              .get(path)
-              .send({email, password})
-              .set('X-Requested-With', 'XMLHttpRequest')
-              .expect('Content-Type', /json/)
-              .expect(200)
-              .then((res) => {
-                let {success, url, info} = res.body
-                assert(!info)
-                assert(success)
-                assert(url)
+    let id = await util.getUserIdFromSession(res, memoryStore)
+    assert.equal(id, userId)
 
-                let cookie = util.getCookie(res)
-                assert(!cookie)
-              })
-          })
-      })
+    res = await request
+      .get(path)
+      .send({email, password})
+      .set('X-Requested-With', 'XMLHttpRequest')
+      .expect('Content-Type', /json/)
+      .expect(200)
+
+    success = res.body.success
+    info = res.body.info
+    url = res.body.url
+    assert(!info)
+    assert(success)
+    assert(url)
+
+    let cookie = util.getCookie(res)
+    assert(!cookie)
   })
 })

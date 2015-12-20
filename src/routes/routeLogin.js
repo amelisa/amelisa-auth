@@ -1,18 +1,12 @@
-function routeLogin (req) {
-  return Promise
-    .resolve(this.parseLoginRequest(req))
-    .then(({data, info}) => {
-      if (info) return Promise.resolve({info})
+async function routeLogin (req) {
+  let { data, info } = await this.parseLoginRequest(req)
+  if (info) return {info}
+  let { email, password } = data
 
-      let {email, password} = data
-      return this
-        .authenticate(email, password)
-        .then((userId) => {
-          if (!userId) return Promise.resolve({info: 'Wrong credentials'})
+  let userId = await this.authenticate(email, password)
+  if (!userId) return {info: 'Wrong credentials'}
 
-          return this.login(userId, req)
-        })
-    })
+  await this.login(userId, req)
 }
 
 export default routeLogin

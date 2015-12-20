@@ -1,14 +1,11 @@
-function routeConfirmEmailChange (req) {
-  return Promise
-    .resolve(this.parseConfirmEmailRequest(req))
-    .then(({data, info}) => {
-      if (info) return {info}
+async function routeConfirmEmailChange (req) {
+  let { data, info } = await this.parseConfirmEmailRequest(req)
+  if (info) return {info}
+  let { userId } = data
 
-      let {userId} = data
-      return this
-        .confirmEmail(userId)
-        .then(() => this.login(userId, req))
-    })
+  await this.confirmEmail(userId)
+
+  await this.login(userId, req)
 }
 
 export default routeConfirmEmailChange

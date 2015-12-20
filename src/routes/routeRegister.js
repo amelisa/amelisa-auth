@@ -1,16 +1,13 @@
-function routeRegister (req) {
+async function routeRegister (req) {
   let userId = req.session.userId
 
-  return Promise
-    .resolve(this.parseRegisterRequest(req))
-    .then(({data, info}) => {
-      if (info) return {info}
+  let { data, info } = await this.parseRegisterRequest(req)
+  if (info) return {info}
+  let { email, password, userData } = data
 
-      let {email, password, userData} = data
-      return this
-        .register(userId, email, password, userData)
-        .then(() => this.login(userId, req))
-    })
+  await this.register(userId, email, password, userData)
+
+  await this.login(userId, req)
 }
 
 export default routeRegister

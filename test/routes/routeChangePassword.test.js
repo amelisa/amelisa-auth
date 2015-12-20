@@ -10,16 +10,13 @@ let password
 let newpassword
 let userId
 
-before(() => {
-  return util.getAuth()
-    .then((a) => {
-      auth = a
-      routeChangePassword = routeChangePasswordInit.bind(auth)
-    })
+before(async () => {
+  auth = await util.getAuth()
+  routeChangePassword = routeChangePasswordInit.bind(auth)
 })
 
 describe('routeChangePassword', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     let model = auth.store.createModel()
     email = util.generateEmail()
     password = util.generatePassword()
@@ -42,13 +39,11 @@ describe('routeChangePassword', () => {
         userId
       }
     }
-    return model.add('auths', user)
+    await model.add('auths', user)
   })
 
-  it('should change password', () => {
-    routeChangePassword(req)
-      .then((data) => {
-        assert(!data)
-      })
+  it('should change password', async () => {
+    let data = await routeChangePassword(req)
+    assert(!data)
   })
 })

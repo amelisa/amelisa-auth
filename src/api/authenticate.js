@@ -1,19 +1,13 @@
-function authenticate (email, password) {
+async function authenticate (email, password) {
   email = email.toLowerCase()
 
-  return this
-    .getUserByEmail(email)
-    .then((user) => {
-      if (!user) return
+  let user = await this.getUserByEmail(email)
+  if (!user) return
 
-      return this
-        .passwordMatch(user, password)
-        .then((match) => {
-          if (!match) return
+  let match = await this.passwordMatch(user, password)
+  if (!match) return
 
-          return user._id
-        })
-    })
+  return user._id
 }
 
 export default authenticate

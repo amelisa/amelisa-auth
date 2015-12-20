@@ -9,16 +9,13 @@ let email
 let password
 let userId
 
-before(() => {
-  return util.getAuth()
-    .then((a) => {
-      auth = a
-      routeLogin = routeLoginInit.bind(auth)
-    })
+before(async () => {
+  auth = await util.getAuth()
+  routeLogin = routeLoginInit.bind(auth)
 })
 
 describe('routeLogin', () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     let model = auth.store.createModel()
     email = util.generateEmail()
     password = util.generatePassword()
@@ -38,23 +35,19 @@ describe('routeLogin', () => {
       session: {},
       login: (userId, next) => next()
     }
-    return model.add('auths', user)
+    await model.add('auths', user)
   })
 
-  it('should login', () => {
-    return routeLogin(req)
-      .then((data) => {
-        assert(!data)
-        assert.equal(req.session.userId, userId)
-      })
+  it('should login', async () => {
+    let data = await routeLogin(req)
+    assert(!data)
+    assert.equal(req.session.userId, userId)
   })
 
-  it('should not login when no email', () => {
+  it('should not login when no email', async () => {
     delete req.body.email
-    return routeLogin(req)
-      .then((data) => {
-        assert(data && data.info)
-        assert(!req.session.userId)
-      })
+    let data = await routeLogin(req)
+    assert(data && data.info)
+    assert(!req.session.userId)
   })
 })
