@@ -39,7 +39,7 @@ let defaultOptions = {
   },
   strategies: {},
 
-  queryCookieFiled: '__query',
+  queryCookieField: '__query',
 
   // Some values to use in hooks
   confirmEmailChangeUrl: '/confirmemailchange',

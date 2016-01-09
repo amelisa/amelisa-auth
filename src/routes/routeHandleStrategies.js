@@ -1,36 +1,35 @@
-module.exports = function (req, res, parsedUrl, next, done) {
-  var self = this
-
-  var provider = parsedUrl.method
-  var options = self.options
-  var strategy = options.strategies[provider]
+async function routeHandleStrategies (req, res, parsedUrl) {
+  let provider = parsedUrl.method
+  let strategy = this.options.strategies[provider]
 
   // Return error if no provider
-  if (!strategy) return next(new Error('Unknown auth provider: ' + provider))
+  if (!strategy) return {info: `Unknown auth provider: ${provider}`}
 
-  var strategyOptions = strategy.conf || {}
+  let strategyOptions = strategy.conf || {}
 
-  if (parsedUrl.callback !== 'callback') {
-    saveQuery()
-    // User tries to login with provider, he will be redirected to provider's page
-    self._passport.authenticate(provider, strategyOptions)(req, res, function (err) {
-      // Here we can get access error from provider
-      return done(err)
-    })
-  } else { // Callback
-    restoreQuery()
-    // User is redirected here from provider's page
-    self._passport.authenticate(provider, self.options.passport, function (err, userId) {
-      // Auth failed, return error
-      if (err) return done(err)
+  return new Promise((resolve, reject) => {
+    if (parsedUrl.callback !== 'callback') {
+      saveQuery()
+      // User tries to login with provider, he will be redirected to provider's page
+      this._passport.authenticate(provider, strategyOptions)(req, res, (err) => {
+        // Here we can get access error from provider
+        return reject(err)
+      })
+    } else { // Callback
+      restoreQuery()
+      // User is redirected here from provider's page
+      this._passport.authenticate(provider, this.options.passport, (err, userId) => {
+        // Auth failed, return error
+        if (err) return reject(err)
 
-      // Everything is ok, login user
-      self.login(userId, req, done)
-    })(req, res, function () {})
-  }
+        // Everything is ok, login user
+        this.login(userId, req, resolve)
+      })(req, res, () => {})
+    }
+  })
 
   function saveQuery () {
-    var name = options.queryCookieFiled
+    let name = this.options.queryCookieField
 
     try {
       res.cookie(name, JSON.stringify(req.query || {}))
@@ -38,8 +37,8 @@ module.exports = function (req, res, parsedUrl, next, done) {
   }
 
   function restoreQuery () {
-    var name = options.queryCookieFiled
-    var query = req.cookies[name]
+    let name = this.options.queryCookieField
+    let query = req.cookies[name]
 
     try {
       query = JSON.parse(query)
@@ -47,10 +46,12 @@ module.exports = function (req, res, parsedUrl, next, done) {
       query = {}
     }
 
-    for (var key in query) {
+    for (let key in query) {
       req.query[key] = req.query[key] || query[key]
     }
 
     res.clearCookie(name)
   }
 }
+
+export default routeHandleStrategies

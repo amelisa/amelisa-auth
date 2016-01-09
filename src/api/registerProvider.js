@@ -1,12 +1,12 @@
 async function registerProvider (userId, provider, profile, userData = {}) {
   let model = this.store.createModel()
-  let userDoc = model.doc('auths', userId)
+  let $user = model.doc('auths', userId)
 
   profile.date = Date.now()
 
-  await userDoc.fetch()
+  await $user.fetch()
 
-  let user = userDoc.get()
+  let user = $user.get()
 
   if (user) {
     if (user[provider]) {
@@ -15,7 +15,7 @@ async function registerProvider (userId, provider, profile, userData = {}) {
       }
     }
 
-    return await userDoc.set(provider, profile)
+    return await $user.set(provider, profile)
   }
 
   user = userData

@@ -1,28 +1,23 @@
-module.exports = function (userId, done) {
-  var self = this
-  var model = self.store.createModel()
+const expirationTimeout = 12 * 60 * 1000 * 1000
 
-  // Look for user with given userId
-  var $user = model.at(self.options.collection + '.' + userId)
-  model.fetch($user, function (err) {
-    if (err) return done(err)
+async function confirmEmail (userId) {
+  let model = this.store.createModel()
+  let $user = model.doc('auths', userId)
 
-    if (!$user.get()) return done(self.error('noUser'))
+  await $user.fetch()
 
-    if (!$user.get(self.options.localField)) return done(self.error('noLocal'))
+  let user = $user.get()
+  if (!user) return {info: 'No user'}
+  if (!user.local) return {info: 'No local provider'}
 
-    var emailChange = $user.get(self.options.localField + '.' + self.options.emailChangeField)
-    if (!emailChange) return done(self.error('alreadyConfirmed'))
+  let emailChange = user.local.emailChange
+  if (!emailChange) return {info: 'Already confirm'}
 
-    var now = +new Date()
-    if (emailChange.timestamp + self.options.confirmEmailTimeLimit < now) {
-      return done(self.error('confirmationExpired'))
-    }
+  let now = Date.now()
+  if (emailChange.date + expirationTimeout < now) return {info: 'Confirmation expired'}
 
-    $user.set(self.options.emailField, emailChange.email, function (err) {
-      if (err) return done(err)
-
-      $user.del(self.options.localField + '.' + self.options.emailChangeField, done)
-    })
-  })
+  await $user.set('email', emailChange.email)
+  await $user.del('local.emailChange')
 }
+
+export default confirmEmail

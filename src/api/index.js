@@ -1,9 +1,9 @@
-var Auth = require('../Auth')
+let Auth = require('../Auth')
 
 Auth.prototype.authenticate = require('./authenticate')
 Auth.prototype.changeEmail = require('./changeEmail')
 Auth.prototype.changePassword = require('./changePassword')
-// Auth.prototype.confirmEmail = require('./confirmEmail')
+Auth.prototype.confirmEmail = require('./confirmEmail')
 Auth.prototype.getUserByEmail = require('./getUserByEmail')
 Auth.prototype.getUserBySecret = require('./getUserBySecret')
 Auth.prototype.login = require('./login')

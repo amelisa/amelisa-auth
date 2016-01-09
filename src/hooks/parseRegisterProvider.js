@@ -1,4 +1,4 @@
-module.exports = function (user, provider, profile, done) {
+function parseRegisterProvider (user, provider, profile) {
   // you can modify user data by provider data from profile here
   // for example:
   /*
@@ -8,5 +8,8 @@ module.exports = function (user, provider, profile, done) {
       user.lastname = profile.name.givenName
       break;
   } */
-  done(null, user)
+
+  return user
 }
+
+export default parseRegisterProvider

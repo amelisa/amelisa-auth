@@ -1,10 +1,10 @@
 async function changePassword (userId, oldpassword, password) {
   let model = this.store.createModel()
-  let userDoc = model.doc('auths', userId)
+  let $user = model.doc('auths', userId)
 
-  await userDoc.fetch()
+  await $user.fetch()
 
-  let user = userDoc.get()
+  let user = $user.get()
   if (!user) return {info: 'No user'}
   if (!user.local) return {info: 'No local provider'}
 

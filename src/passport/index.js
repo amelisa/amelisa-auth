@@ -14,4 +14,4 @@ passport.deserializeUser((userId, done) => {
 
 Auth.prototype._passport = passport
 
-// Auth.prototype.initStrategies = require('./strategies')
+Auth.prototype.initStrategies = require('./strategies')

@@ -1,9 +1,10 @@
 async function verifyCallback (req, accessToken, refreshToken, profile) {
   let model = req.getModel()
+  let $users = model.query('auths', {[profile.provider]: profile.id})
 
-  await model.fetch('auths', {[profile.provider]: profile.id})
+  await $users.fetch()
 
-  let users = model.getQuery('auths', {[profile.provider]: profile.id})
+  let users = $users.get()
   let user = users[0]
 
   // If there is user, no need to register new one. Return to router to login

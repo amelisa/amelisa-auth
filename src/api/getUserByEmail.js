@@ -1,11 +1,11 @@
 async function getUserByEmail (email) {
   email = email.toLowerCase()
   let model = this.store.createModel()
-  let userQuery = model.query('auths', {email})
+  let $users = model.query('auths', {email})
 
-  await userQuery.fetch()
+  await $users.fetch()
 
-  let users = userQuery.get()
+  let users = $users.get()
   let user = users[0]
 
   return user

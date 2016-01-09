@@ -1,10 +1,10 @@
 async function getUserBySecret (secret) {
   let model = this.store.createModel()
-  let userQuery = model.query('auths', {'local.secret': secret})
+  let $users = model.query('auths', {'local.secret': secret})
 
-  await userQuery.fetch()
+  await $users.fetch()
 
-  let users = userQuery.get()
+  let users = $users.get()
   let user = users[0]
 
   if (!user) return {info: 'No user'}
