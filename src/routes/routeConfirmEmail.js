@@ -1,4 +1,4 @@
-async function routeConfirmEmailChange (req) {
+async function routeConfirmEmail (req) {
   let { data, info } = await this.parseConfirmEmailRequest(req)
   if (info) return {info}
   let { userId } = data
@@ -8,4 +8,4 @@ async function routeConfirmEmailChange (req) {
   await this.login(userId, req)
 }
 
-export default routeConfirmEmailChange
+export default routeConfirmEmail

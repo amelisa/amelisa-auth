@@ -10,14 +10,13 @@ async function confirmEmail (userId) {
   if (!user) return {info: 'No user'}
   if (!user.local) return {info: 'No local provider'}
 
-  let emailChange = user.local.emailChange
-  if (!emailChange) return {info: 'Already confirm'}
+  let emailConfirm = user.local.emailConfirm
+  if (!emailConfirm) return {info: 'Already confirm'}
 
-  let now = Date.now()
-  if (emailChange.date + expirationTimeout < now) return {info: 'Confirmation expired'}
+  if (emailConfirm.date + expirationTimeout < Date.now()) return {info: 'Confirmation expired'}
 
-  await $user.set('email', emailChange.email)
-  await $user.del('local.emailChange')
+  await $user.set('email', emailConfirm.email)
+  await $user.del('local.emailConfirm')
 }
 
 export default confirmEmail

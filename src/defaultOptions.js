@@ -18,7 +18,7 @@ let defaultOptions = {
     logout: 'logout',
     register: 'register',
     confirmregistration: 'confirmregistration',
-    confirmemailchange: 'confirmemailchange'
+    confirmemail: 'confirmemail'
   },
 
   // Local provider
@@ -42,9 +42,9 @@ let defaultOptions = {
   queryCookieField: '__query',
 
   // Some values to use in hooks
-  confirmEmailChangeUrl: '/confirmemailchange',
+  confirmEmailUrl: '/confirmemail',
   confirmRegistrationUrl: '/confirmregistration',
-  emailChangeConfirmedUrl: '/emailchangeconfirmed',
+  emailConfirmedUrl: '/emailconfirmed',
   loginUrl: '/login',
   recoverPasswordUrl: '/recoverpassword',
   registrationConfirmedUrl: '/registrationconfirmed',
