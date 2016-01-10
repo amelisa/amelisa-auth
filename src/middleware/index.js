@@ -10,10 +10,6 @@ function middleware (store, options = {}) {
   this.store = store
   this.options = Object.assign({}, defaultOptions, options)
 
-  for (let key in this.options.hooks) {
-    this[key] = this.options.hooks[key]
-  }
-
   this.initCrypt()
 
   return (req, res, next) => {

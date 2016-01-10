@@ -1,5 +1,6 @@
 import './api'
 import './crypt'
+import './hooks'
 import './middleware'
 import './passport'
 import './routes'

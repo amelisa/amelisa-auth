@@ -1,4 +1,4 @@
-function request (req, res, userId, isAuthenticated) {
+async function request (req, res, userId, isAuthenticated) {
   // Request hook executes on every request before it goes to app, it's good place
   // to restrict access to some urls
 
@@ -7,8 +7,6 @@ function request (req, res, userId, isAuthenticated) {
   } else {
     delete req.session.loggedIn
   }
-
-  return Promise.resolve()
 }
 
 export default request

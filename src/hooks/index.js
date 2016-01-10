@@ -1,0 +1,22 @@
+let Auth = require('../Auth')
+
+Auth.prototype.parseChangeEmailRequest = require('./parseChangeEmailRequest')
+Auth.prototype.parseChangePasswordRequest = require('./parseChangePasswordRequest')
+Auth.prototype.parseConfirmEmailRequest = require('./parseConfirmEmailRequest')
+Auth.prototype.parseLoginRequest = require('./parseLoginRequest')
+Auth.prototype.parseRegisterRequest = require('./parseRegisterRequest')
+Auth.prototype.parseRegisterProvider = require('./parseRegisterProvider')
+Auth.prototype.parseRecoverPasswordRequest = require('./parseRecoverPasswordRequest')
+Auth.prototype.parseResetPasswordRequest = require('./parseResetPasswordRequest')
+
+Auth.prototype.sendChangeEmailConfirmation = require('./sendChangeEmailConfirmation')
+Auth.prototype.sendRegistrationInfo = require('./sendRegistrationInfo')
+Auth.prototype.sendRegistrationConfirmation = require('./sendRegistrationConfirmation')
+Auth.prototype.sendRegistrationConfirmationComplete = require('./sendRegistrationConfirmationComplete')
+Auth.prototype.sendRecoveryConfirmation = require('./sendRecoveryConfirmation')
+Auth.prototype.sendChangePassword = require('./sendChangePassword')
+Auth.prototype.sendResetPassword = require('./sendResetPassword')
+
+Auth.prototype.request = require('./request')
+Auth.prototype.response = require('./response')
+Auth.prototype.error = require('./error')

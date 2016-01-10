@@ -66,37 +66,7 @@ let defaultOptions = {
     wrongPassword: 'Password is wrong'
   },
 
-  emailRegex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/,
-
-  // To tell the truth you can redifine not only hook but also api and routes
-  // (any of the Login functions)
-
-  hooks: {
-    // Next hooks are for parsing values from requests for different operations
-    // Parsing requests manually makes possible creating forms with different fields
-    // It's good place for validation
-
-    parseChangeEmailRequest: require('./hooks/parseChangeEmailRequest'),
-    parseChangePasswordRequest: require('./hooks/parseChangePasswordRequest'),
-    parseConfirmEmailRequest: require('./hooks/parseConfirmEmailRequest'),
-    parseLoginRequest: require('./hooks/parseLoginRequest'),
-    parseRegisterRequest: require('./hooks/parseRegisterRequest'),
-    parseRegisterProvider: require('./hooks/parseRegisterProvider'),
-    parseRecoverPasswordRequest: require('./hooks/parseRecoverPasswordRequest'),
-    parseResetPasswordRequest: require('./hooks/parseResetPasswordRequest'),
-
-    sendChangeEmailConfirmation: require('./hooks/sendChangeEmailConfirmation'),
-    sendRegistrationInfo: require('./hooks/sendRegistrationInfo'),
-    sendRegistrationConfirmation: require('./hooks/sendRegistrationConfirmation'),
-    sendRegistrationConfirmationComplete: require('./hooks/sendRegistrationConfirmationComplete'),
-    sendRecoveryConfirmation: require('./hooks/sendRecoveryConfirmation'),
-    sendChangePassword: require('./hooks/sendChangePassword'),
-    sendResetPassword: require('./hooks/sendResetPassword'),
-
-    request: require('./hooks/request'),
-    response: require('./hooks/response'),
-    error: require('./hooks/error')
-  }
+  emailRegex: /^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$/
 }
 
 export default defaultOptions
