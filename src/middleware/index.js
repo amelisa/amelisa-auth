@@ -11,6 +11,7 @@ function middleware (store, options = {}) {
   this.options = Object.assign({}, defaultOptions, options)
 
   this.initCrypt()
+  this.initStrategies()
 
   return (req, res, next) => {
     this._passport.initialize()(req, res, (err) => {

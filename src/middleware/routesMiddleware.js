@@ -39,8 +39,8 @@ function routesMiddleware (req, res, next) {
     .then((data) => {
       let info = data ? data.info : null
       if (info) return res.json({info})
-      if (req.isProvider) return next()
-      this.response(null, info, parsedUrl.method, req, res)
+      // if (req.isProvider) return next()
+      return this.response(null, info, parsedUrl.method, req, res)
     })
     .catch((err) => {
       console.error(err, err.stack)
