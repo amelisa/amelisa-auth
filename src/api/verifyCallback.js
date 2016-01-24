@@ -1,6 +1,7 @@
 async function verifyCallback (req, accessToken, refreshToken, profile, done) {
   let model = req.getModel()
-  let $users = model.query('auths', {[profile.provider]: profile.id})
+
+  let $users = model.query('auths', {[`${profile.provider}.id`]: profile.id})
 
   try {
     await $users.fetch()
