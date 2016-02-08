@@ -12,6 +12,7 @@
   "author": "",
   "license": "MIT",
   "peerDependencies": {
+    "amelisa": "0.1.x",
     "react": "0.14.x"
   },
   "dependencies": {
