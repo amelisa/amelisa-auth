@@ -54,7 +54,9 @@ async function routeHandleStrategies (req, res, parsedUrl) {
         // Everything is ok, login user
         this
           .login(userId, req)
-          .then(resolve)
+          .then(() => {
+            resolve({userId})
+          })
           .catch(reject)
       })(req, res, (err) => {
         console.trace('Auth error', err)

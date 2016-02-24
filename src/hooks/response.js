@@ -30,15 +30,15 @@ function response (err, info, methodOrProvider, req, res, additionalData = {}) {
           url = this.options.confirmRegistrationUrl
         }
 
-        return res.json(Object.assign({}, {success: true, url: url}, additionalData))
+        return res.json(Object.assign({success: true, url}, additionalData))
       // do not send redirect url, to emit component success event
       case urls.changeemail:
       case urls.changepassword:
       case urls.recoverpassword:
       case urls.resetpassword:
-        return res.json(Object.assign({}, {success: true}, additionalData))
+        return res.json(Object.assign({success: true}, additionalData))
       default:
-        return res.json({success: true, url: successUrl})
+        return res.json(Object.assign({success: true, url: successUrl}, additionalData))
     }
   }
 
