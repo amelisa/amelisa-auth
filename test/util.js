@@ -1,4 +1,4 @@
-import { MemoryStorage, Store } from 'amelisa'
+import { MemoryStorage, Store } from 'amelisa/server'
 import supertest from 'supertest-as-promised'
 import bcrypt from 'bcrypt'
 import express from 'express'
