@@ -31,9 +31,9 @@ describe('Middleware register', () => {
     assert(url)
 
     let model = auth.store.createModel()
-    let userQuery = model.query('auths', {})
-    await userQuery.fetch()
-    let users = userQuery.get()
+    let $users = model.query('auths', {})
+    await $users.fetch()
+    let users = $users.get()
     assert.equal(users.length, 1)
     let user = users[0]
     assert.equal(user.email, email)
@@ -56,9 +56,9 @@ describe('Middleware register', () => {
     assert(!url)
 
     let model = auth.store.createModel()
-    let userQuery = model.query('auths', {})
-    await userQuery.fetch()
-    let users = userQuery.get()
+    let $users = model.query('auths', {})
+    await $users.fetch()
+    let users = $users.get()
     assert.equal(users.length, 0)
   })
 
@@ -76,9 +76,9 @@ describe('Middleware register', () => {
     assert(!url)
 
     let model = auth.store.createModel()
-    let userQuery = model.query('auths', {})
-    await userQuery.fetch()
-    let users = userQuery.get()
+    let $users = model.query('auths', {})
+    await $users.fetch()
+    let users = $users.get()
     assert.equal(users.length, 0)
   })
 
@@ -96,9 +96,9 @@ describe('Middleware register', () => {
     assert(!url)
 
     let model = auth.store.createModel()
-    let userQuery = model.query('auths', {})
-    await userQuery.fetch()
-    let users = userQuery.get()
+    let $users = model.query('auths', {})
+    await $users.fetch()
+    let users = $users.get()
     assert.equal(users.length, 0)
   })
 
@@ -116,9 +116,9 @@ describe('Middleware register', () => {
     assert(!url)
 
     let model = auth.store.createModel()
-    let userQuery = model.query('auths', {})
-    await userQuery.fetch()
-    let users = userQuery.get()
+    let $users = model.query('auths', {})
+    await $users.fetch()
+    let users = $users.get()
     assert.equal(users.length, 0)
   })
 
@@ -136,9 +136,9 @@ describe('Middleware register', () => {
     assert(!url)
 
     let model = auth.store.createModel()
-    let userQuery = model.query('auths', {})
-    await userQuery.fetch()
-    let users = userQuery.get()
+    let $users = model.query('auths', {})
+    await $users.fetch()
+    let users = $users.get()
     assert.equal(users.length, 0)
   })
 
@@ -157,9 +157,9 @@ describe('Middleware register', () => {
     assert(!url)
 
     let model = auth.store.createModel()
-    let userQuery = model.query('auths', {})
-    await userQuery.fetch()
-    let users = userQuery.get()
+    let $users = model.query('auths', {})
+    await $users.fetch()
+    let users = $users.get()
     assert.equal(users.length, 0)
   })
 
@@ -177,9 +177,9 @@ describe('Middleware register', () => {
     assert(!url)
 
     let model = auth.store.createModel()
-    let userQuery = model.query('auths', {})
-    await userQuery.fetch()
-    let users = userQuery.get()
+    let $users = model.query('auths', {})
+    await $users.fetch()
+    let users = $users.get()
     assert.equal(users.length, 0)
   })
 })

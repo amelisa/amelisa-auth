@@ -46,9 +46,9 @@ describe('Middleware reset password', () => {
     assert(success)
 
     let model = auth.store.createModel()
-    let userDoc = model.doc('auths', userId)
-    await userDoc.fetch()
-    let user = userDoc.get()
+    let $user = model.doc('auths', userId)
+    await $user.fetch()
+    let user = $user.get()
     assert(util.compare(newpassword, user.local.hash))
   })
 
@@ -64,9 +64,9 @@ describe('Middleware reset password', () => {
     assert(!success)
 
     let model = auth.store.createModel()
-    let userDoc = model.doc('auths', userId)
-    await userDoc.fetch()
-    let user = userDoc.get()
+    let $user = model.doc('auths', userId)
+    await $user.fetch()
+    let user = $user.get()
     assert(util.compare(password, user.local.hash))
   })
 
@@ -83,9 +83,9 @@ describe('Middleware reset password', () => {
     assert(!success)
 
     let model = auth.store.createModel()
-    let userDoc = model.doc('auths', userId)
-    await userDoc.fetch()
-    let user = userDoc.get()
+    let $user = model.doc('auths', userId)
+    await $user.fetch()
+    let user = $user.get()
     assert(util.compare(password, user.local.hash))
   })
 
@@ -102,9 +102,9 @@ describe('Middleware reset password', () => {
     assert(!success)
 
     let model = auth.store.createModel()
-    let userDoc = model.doc('auths', userId)
-    await userDoc.fetch()
-    let user = userDoc.get()
+    let $user = model.doc('auths', userId)
+    await $user.fetch()
+    let user = $user.get()
     assert(util.compare(password, user.local.hash))
   })
 
@@ -121,9 +121,9 @@ describe('Middleware reset password', () => {
     assert(!success)
 
     let model = auth.store.createModel()
-    let userDoc = model.doc('auths', userId)
-    await userDoc.fetch()
-    let user = userDoc.get()
+    let $user = model.doc('auths', userId)
+    await $user.fetch()
+    let user = $user.get()
     assert(util.compare(password, user.local.hash))
   })
 
@@ -140,9 +140,9 @@ describe('Middleware reset password', () => {
     assert(!success)
 
     let model = auth.store.createModel()
-    let userDoc = model.doc('auths', userId)
-    await userDoc.fetch()
-    let user = userDoc.get()
+    let $user = model.doc('auths', userId)
+    await $user.fetch()
+    let user = $user.get()
     assert(util.compare(password, user.local.hash))
   })
 
@@ -159,9 +159,9 @@ describe('Middleware reset password', () => {
     assert(!success)
 
     let model = auth.store.createModel()
-    let userDoc = model.doc('auths', userId)
-    await userDoc.fetch()
-    let user = userDoc.get()
+    let $user = model.doc('auths', userId)
+    await $user.fetch()
+    let user = $user.get()
     assert(util.compare(password, user.local.hash))
   })
 })

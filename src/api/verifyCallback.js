@@ -21,6 +21,10 @@ async function verifyCallback (req, accessToken, refreshToken, profile, done) {
 
   // Register new user or add provider to current user
   let { userId } = req.session
+
+  // Generate userId if absent
+  if (!userId) userId = model.id()
+
   try {
     await this.registerProvider(userId, profile.provider, profile)
   } catch (err) {

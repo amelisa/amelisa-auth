@@ -50,7 +50,6 @@ async function routeHandleStrategies (req, res, parsedUrl) {
       this._passport.authenticate(provider, passportOptions, (err, userId) => {
         // Auth failed, return error
         if (err) return reject(err)
-
         // Everything is ok, login user
         this
           .login(userId, req)

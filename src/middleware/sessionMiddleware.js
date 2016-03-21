@@ -25,12 +25,12 @@ function sessionMiddleware (req, res, next) {
     return done()
   }
 
-  let userDoc = model.doc('auths', userId)
+  let $user = model.doc('auths', userId)
 
-  userDoc
+  $user
     .fetch()
     .then(() => {
-      let user = userDoc.get()
+      let user = $user.get()
 
       if (!user && isAuthenticated) {
         // This happens when user was deleted from database, but his session not
