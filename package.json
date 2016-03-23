@@ -1,7 +1,7 @@
 {
   "name": "amelisa-auth",
   "version": "0.1.4",
-  "description": "",
+  "description": "Auth for Amelisa",
   "main": "lib/index.js",
   "scripts": {
     "prepublish": "babel --optional runtime src --out-dir lib",
@@ -9,7 +9,23 @@
     "lint": "standard | snazzy",
     "test": "mocha --compilers js:babel-core/register \"test/**/*.test.js\""
   },
-  "author": "",
+  "repository": {
+   "type": "git",
+   "url": "https://github.com/amelisa/amelisa-auth.git"
+  },
+  "bugs": {
+    "url": "https://github.com/amelisa/amelisa-auth/issues"
+  },
+  "keywords": [
+    "amelisa",
+    "auth",
+    "passport",
+    "login"
+  ],
+  "author": {
+    "email": "vmakhaev@gmail.com",
+    "name": "Vladimir Makhaev"
+  },
   "license": "MIT",
   "peerDependencies": {
     "amelisa": "0.1.x",
