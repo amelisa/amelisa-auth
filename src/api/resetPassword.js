@@ -3,7 +3,7 @@ async function resetPassword (secret, password) {
   if (info) return {info}
   let { user } = data
 
-  await this.setPassword(user._id, password)
+  await this.setPassword(user.id, password)
 }
 
 export default resetPassword

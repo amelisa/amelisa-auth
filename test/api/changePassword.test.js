@@ -24,7 +24,7 @@ describe('changePassword', async () => {
 
   it('should changePassword', async () => {
     let user = {
-      _id: userId,
+      id: userId,
       local: {
         hash: util.makeHash(oldpassword)
       }
@@ -41,7 +41,7 @@ describe('changePassword', async () => {
 
   it('should not changePassword if no local provider', async () => {
     let user = {
-      _id: userId
+      id: userId
     }
     await model.add('auths', user)
     let data = await changePassword(userId, oldpassword, password)
@@ -50,7 +50,7 @@ describe('changePassword', async () => {
 
   it('should not changePassword if wrong oldpassword', async () => {
     let user = {
-      _id: userId,
+      id: userId,
       local: {
         hash: util.makeHash(oldpassword)
       }

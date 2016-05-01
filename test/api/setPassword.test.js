@@ -22,7 +22,7 @@ describe('setPassword', () => {
 
   it('should setPassword', async () => {
     let user = {
-      _id: userId
+      id: userId
     }
     await model.add('auths', user)
     let data = await setPassword(userId, password)

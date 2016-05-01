@@ -22,7 +22,7 @@ describe('changeEmail', () => {
 
   it('should changeEmail', async () => {
     let user = {
-      _id: userId,
+      id: userId,
       email: util.generateEmail()
     }
     await model.add('auths', user)
@@ -35,7 +35,7 @@ describe('changeEmail', () => {
 
   it('should not changeEmail if same email', async () => {
     let user = {
-      _id: userId,
+      id: userId,
       email: email
     }
     await model.add('auths', user)

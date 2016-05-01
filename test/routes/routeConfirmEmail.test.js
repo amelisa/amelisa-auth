@@ -19,7 +19,7 @@ describe('routeConfirmEmail', () => {
     email = util.generateEmail()
     userId = model.id()
     let user = {
-      _id: userId,
+      id: userId,
       local: {
         emailConfirm: {
           date: Date.now(),

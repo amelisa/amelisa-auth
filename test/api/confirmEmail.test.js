@@ -22,7 +22,7 @@ describe('confirmEmail', () => {
 
   it('should confirmEmail', async () => {
     let user = {
-      _id: userId,
+      id: userId,
       local: {
         emailConfirm: {
           date: Date.now(),
@@ -41,7 +41,7 @@ describe('confirmEmail', () => {
 
   it('should not confirmEmail if already confirmed', async () => {
     let user = {
-      _id: userId,
+      id: userId,
       local: {
       }
     }
@@ -52,7 +52,7 @@ describe('confirmEmail', () => {
 
   it('should not confirmEmail expired', async () => {
     let user = {
-      _id: userId,
+      id: userId,
       local: {
         emailConfirm: {
           date: Date.now() - 12 * 60 * 1000 * 1000,

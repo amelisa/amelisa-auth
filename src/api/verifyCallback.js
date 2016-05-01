@@ -13,7 +13,7 @@ async function verifyCallback (req, accessToken, refreshToken, profile, done) {
   let user = users[0]
 
   // If there is user, no need to register new one. Return to router to login
-  if (user) return done(null, user._id)
+  if (user) return done(null, user.id)
 
   // Maybe we need these tokens someday
   profile.accessToken = accessToken

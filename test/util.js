@@ -1,4 +1,5 @@
-import { MemoryStorage, Store } from 'amelisa/server'
+import { Store } from 'amelisa'
+import { MemoryStorage } from 'amelisa/mongo-server'
 import supertest from 'supertest-as-promised'
 import bcrypt from 'bcrypt'
 import express from 'express'
@@ -21,7 +22,7 @@ function gen () {
 async function getStore () {
   let storage = new MemoryStorage()
   await storage.init()
-  let store = new Store(storage)
+  let store = new Store({storage})
   return store
 }
 

@@ -19,7 +19,7 @@ async function registerProvider (userId, provider, profile, userData = {}) {
   }
 
   user = userData
-  user._id = userId
+  user.id = userId
   user[provider] = profile
 
   await model.add('auths', user)

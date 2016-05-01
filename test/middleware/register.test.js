@@ -40,7 +40,7 @@ describe('Middleware register', () => {
     assert(util.compare(password, user.local.hash))
 
     let id = await util.getUserIdFromSession(res, memoryStore)
-    assert.equal(id, user._id)
+    assert.equal(id, user.id)
   })
 
   it('should not register when no credentials', async () => {

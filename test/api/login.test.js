@@ -16,10 +16,10 @@ describe.skip('login', () => {
     let req = {
       session: {}
     }
-    await login(dbUser._id, req)
+    await login(dbUser.id, req)
     assert(req.user)
-    assert.equal(req.user, dbUser._id)
+    assert.equal(req.user, dbUser.id)
     assert(req.session.userId)
-    assert.equal(req.session.userId, dbUser._id)
+    assert.equal(req.session.userId, dbUser.id)
   })
 })

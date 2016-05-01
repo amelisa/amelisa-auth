@@ -32,7 +32,7 @@ describe('register', () => {
     await model.fetch('auths', userId)
     let user = model.get('auths', userId)
     assert(user)
-    assert.equal(user._id, userId)
+    assert.equal(user.id, userId)
     assert.equal(user.email, email)
     assert.equal(user.a, userData.a)
     assert(user.local)
@@ -42,7 +42,7 @@ describe('register', () => {
 
   it('should just save profile if user with userId exists but without provider', async () => {
     let dbUser = {
-      _id: userId
+      id: userId
     }
     await model.add('auths', dbUser)
     let data = await register(userId, email, password, userData)
@@ -50,7 +50,7 @@ describe('register', () => {
     await model.fetch('auths', userId)
     let user = model.get('auths', userId)
     assert(user)
-    assert.equal(user._id, userId)
+    assert.equal(user.id, userId)
     assert(!user.email)
     assert(!user.a)
     assert(user.local)
@@ -69,7 +69,7 @@ describe('register', () => {
 
   it('should not register when user with same userId and provider exists', async () => {
     let dbUser = {
-      _id: userId,
+      id: userId,
       local: {}
     }
     await model.add('auths', dbUser)

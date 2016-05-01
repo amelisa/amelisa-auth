@@ -18,7 +18,7 @@ describe('getUserByEmail', () => {
     email = util.generateEmail()
     userId = model.id()
     let user = {
-      _id: userId,
+      id: userId,
       email: email
     }
     await model.add('auths', user)
@@ -27,13 +27,13 @@ describe('getUserByEmail', () => {
   it('should get user', async () => {
     let user = await getUserByEmail(email)
     assert(user)
-    assert.equal(user._id, userId)
+    assert.equal(user.id, userId)
   })
 
   it('should get user when uppercase email', async () => {
     let user = await getUserByEmail(email.toUpperCase())
     assert(user)
-    assert.equal(user._id, userId)
+    assert.equal(user.id, userId)
   })
 
   it('should not get user when wrong email', async () => {

@@ -22,7 +22,7 @@ describe('passwordMatch', () => {
 
   it('should passwordMatch', async () => {
     let user = {
-      _id: userId,
+      id: userId,
       local: {
         hash: util.makeHash(password)
       }
@@ -34,7 +34,7 @@ describe('passwordMatch', () => {
 
   it('should not passwordMatch', async () => {
     let user = {
-      _id: userId,
+      id: userId,
       local: {
         hash: util.makeHash(password)
       }

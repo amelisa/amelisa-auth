@@ -20,7 +20,7 @@ describe('Middleware login', () => {
     userId = model.id()
 
     let user = {
-      _id: userId,
+      id: userId,
       email: email,
       local: {
         hash: util.makeHash(password)
