@@ -1,6 +1,6 @@
 {
   "name": "amelisa-auth",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Auth for Amelisa",
   "main": "lib/index.js",
   "scripts": {
@@ -10,8 +10,8 @@
     "test": "mocha --compilers js:babel-core/register \"test/**/*.test.js\""
   },
   "repository": {
-   "type": "git",
-   "url": "https://github.com/amelisa/amelisa-auth.git"
+    "type": "git",
+    "url": "https://github.com/amelisa/amelisa-auth.git"
   },
   "bugs": {
     "url": "https://github.com/amelisa/amelisa-auth/issues"
