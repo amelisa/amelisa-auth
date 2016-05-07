@@ -1,15 +1,15 @@
 import { Store } from 'amelisa'
-import { MemoryStorage } from 'amelisa/mongo-server'
+import MemoryStorage from 'amelisa-mongo/MemoryStorage'
 import supertest from 'supertest-as-promised'
 import bcrypt from 'bcrypt'
 import express from 'express'
 import bodyParser from 'body-parser'
 import session from 'express-session'
-let MemoryStore = session.MemoryStore
+const { MemoryStore } = session
 import auth from '../src'
 
-let minFactor = 4
-let possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
+const minFactor = 4
+const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz'
 
 function gen () {
   let text = ''
