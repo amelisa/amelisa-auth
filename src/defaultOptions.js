@@ -23,7 +23,7 @@ let defaultOptions = {
 
   // Local provider
   encryption: 'bcryptjs', // 'bcryptjs' (js) or 'bcrypt' (native) or 'sha-1'
-  encryptionStrength: 10,
+  encryptionStrength: 8,
   localField: 'local',
   emailField: 'email',
   emailChangeField: 'emailChange',

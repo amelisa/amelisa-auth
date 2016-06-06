@@ -4,7 +4,7 @@ import bcrypt from './bcrypt'
 let cryptModule
 
 function initCrypt () {
-  cryptModule = bcrypt(8)
+  cryptModule = bcrypt(this.options.encryptionStrength)
 }
 
 function hash (password) {
