@@ -1,6 +1,6 @@
 {
   "name": "amelisa-auth",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Auth for Amelisa",
   "main": "lib",
   "scripts": {
