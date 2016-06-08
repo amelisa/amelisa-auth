@@ -35,7 +35,8 @@ describe('routeRegister', () => {
 
   it('should register and login', async () => {
     let data = await routeRegister(req)
-    assert(!data)
+    assert(data && data.userId)
+    assert.equal(data.userId, userId)
     assert.equal(req.session.userId, userId)
   })
 })

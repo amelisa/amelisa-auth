@@ -40,7 +40,8 @@ describe('routeLogin', () => {
 
   it('should login', async () => {
     let data = await routeLogin(req)
-    assert(!data)
+    assert(data && data.userId)
+    assert.equal(data.userId, userId)
     assert.equal(req.session.userId, userId)
   })
 

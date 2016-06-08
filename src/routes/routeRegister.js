@@ -8,6 +8,8 @@ async function routeRegister (req) {
   await this.register(userId, email, password, userData)
 
   await this.login(userId, req)
+
+  return {userId}
 }
 
 export default routeRegister

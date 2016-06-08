@@ -7,6 +7,8 @@ async function routeLogin (req) {
   if (!userId) return {info: 'Wrong credentials'}
 
   await this.login(userId, req)
+
+  return {userId}
 }
 
 export default routeLogin
