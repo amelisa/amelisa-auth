@@ -1,4 +1,4 @@
-async function sendResetPassword (secret, password) {
+async function sendResetPassword (email, password) {
 
 }
 

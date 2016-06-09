@@ -3,9 +3,11 @@ async function routeResetPassword (req) {
   if (info) return {info}
   let { password, secret } = data
 
-  await this.sendResetPassword(secret, password)
+  let result = await this.resetPassword(secret, password)
+  if (result.info) return {info: result.info}
 
-  return this.resetPassword(secret, password)
+  let { user } = result
+  await this.sendResetPassword(user.email, password)
 }
 
 export default routeResetPassword

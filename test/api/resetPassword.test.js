@@ -31,7 +31,7 @@ describe('resetPassword', async () => {
     }
     await model.add('auths', user)
     let data = await resetPassword(secret, password)
-    assert(!data)
+    assert(data && !data.info && data.user)
 
     await model.fetch('auths', userId)
     let hash = model.get('auths', userId, 'local.hash')
