@@ -7,7 +7,7 @@ async function authenticate (email, password) {
   let match = await this.passwordMatch(user, password)
   if (!match) return
 
-  return user.id
+  return {userId: user.id}
 }
 
 export default authenticate

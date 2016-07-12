@@ -30,15 +30,15 @@ describe('authenticate', () => {
   })
 
   it('should authenticate and return userId', async () => {
-    let id = await authenticate(email, password)
-    assert(id)
-    assert.equal(id, userId)
+    let data = await authenticate(email, password)
+    assert(data && data.userId)
+    assert.equal(data.userId, userId)
   })
 
   it('should authenticate and return userId with uppercase email', async () => {
-    let id = await authenticate(email.toUpperCase(), password)
-    assert(id)
-    assert.equal(id, userId)
+    let data = await authenticate(email.toUpperCase(), password)
+    assert(data && data.userId)
+    assert.equal(data.userId, userId)
   })
 
   it('should not authenticate with wrong email', async () => {

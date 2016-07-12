@@ -3,8 +3,11 @@ async function routeLogin (req) {
   if (info) return {info}
   let { email, password } = data
 
-  let userId = await this.authenticate(email, password)
-  if (!userId) return {info: 'Wrong credentials'}
+  let result = await this.authenticate(email, password)
+  if (result && result.info) return result
+  if (!result || !result.userId) return {info: 'Wrong credentials'}
+
+  let { userId } = result
 
   await this.login(userId, req)
 
